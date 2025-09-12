@@ -1,0 +1,10 @@
+#!/usr/bin/env sh 
+. "$(dirname "$0")/_/husky.sh" 
+
+branch_name=$(git rev-parse --abbrev-ref HEAD) 
+
+if ! echo "$branch_name" | grep -Eq '^(feature|fix|hotfix|release)\/[a-z0-9._-]+$'; then 
+  echo "❌ Nome de branch inválido: $branch_name" 
+  echo "Use o padrão: feature/<nome>, fix/<nome>, hotfix/<nome>, release/<nome>" 
+  exit 1 
+fi
