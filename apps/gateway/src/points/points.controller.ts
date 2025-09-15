@@ -20,7 +20,9 @@ export class PointsController {
     }
 
     @Patch('/:id')
-    patchPoints() {}
+    patchPoints() {
+        return this.pointsService.patchPoints();
+    }
 
     @Delete('/:id')
     deletePoints() {

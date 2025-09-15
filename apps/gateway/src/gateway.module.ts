@@ -7,9 +7,17 @@ import { AuthModule } from './auth/auth.module';
 import { PointsModule } from './points/points.module';
 import { RoutesModule } from './routes/routes.module';
 import { AppModule } from './app/app.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-    imports: [GatewayModule, AuthModule, PointsModule, RoutesModule, AppModule],
+    imports: [
+        GatewayModule,
+        AuthModule,
+        PointsModule,
+        RoutesModule,
+        AppModule,
+        ConfigModule.forRoot({ isGlobal: true }),
+    ],
     controllers: [
         AuthController,
         PointsController,
