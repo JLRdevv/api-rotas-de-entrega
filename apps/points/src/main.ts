@@ -1,16 +1,21 @@
-import { NestFactory } from '@nestjs/core';
-import { Transport } from '@nestjs/microservices';
-//import { AppModule } from './app.module';
-//não existe
+import { NestFactory } from '@nestjs/core'
+import { Transport } from '@nestjs/microservices'
+import { PointsModule } from './points.module'
+import * as dotenv from 'dotenv'
 
-// async function bootstrap() {
-//   const app = await NestFactory.createMicroservice(AppModule, {
-//     transport: Transport.TCP,
-//     options: {
-//       host: '0.0.0.0',
-//       port: 3001,
-//     },
-//   });
-//   await app.listen();
-// }
-// bootstrap();
+async function bootstrap() {
+  dotenv.config({ path: 'config/rmq.env' })
+
+  const app = await NestFactory.createMicroservice(PointsModule, {
+    transport: Transport.RMQ,
+    options: {
+      urls: [process.env.RABBITMQ_URL],
+      queue: 'points_queue',
+      queueOptions: {
+        durable: false
+      },
+    },
+  })
+  await app.listen()
+}
+bootstrap()

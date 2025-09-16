@@ -1,13 +1,22 @@
 import { Module } from '@nestjs/common'
-import { TypeOrmModule } from '@nestjs/typeorm'
+import { ClientsModule, Transport } from '@nestjs/microservices'
 import { PointsController } from './points.controller'
-import { PointService } from './point.service'
-import { Point } from './entities/point.entity'
+import { PointsService } from 'apps/gateway/src/points/points.service'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Point])],
-  controllers: [PointsController],
-  providers: [PointService],
-  exports: [PointService]
+    imports: [
+        ClientsModule.register([
+            {
+                name: 'POINTS_SERVICE',
+                transport: Transport.RMQ,
+                options: {
+                    urls: ['amqp://admin:admin123@localhost:5672'],
+                    queue: 'points_queue',
+                },
+            },
+        ]),
+    ],
+    controllers: [PointsController],
+    providers: [PointsService],
 })
 export class PointsModule {}
