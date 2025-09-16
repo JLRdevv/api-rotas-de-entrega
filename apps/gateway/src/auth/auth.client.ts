@@ -5,8 +5,9 @@ import {
 } from '@nestjs/microservices';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, timeout } from 'rxjs';
 import { AuthRequest, AuthResponse } from '@app/contracts';
+import { handleRpcError } from '../helpers/rpc-error.util';
 
 @Injectable()
 export class AuthClient {
@@ -24,20 +25,32 @@ export class AuthClient {
     }
 
     async signup(email: string, password: string): Promise<AuthResponse> {
-        return await firstValueFrom(
-            this.client.send<AuthResponse, AuthRequest>(
-                { cmd: 'signup' },
-                { email, password },
-            ),
-        );
+        try {
+            return await firstValueFrom(
+                this.client
+                    .send<
+                        AuthResponse,
+                        AuthRequest
+                    >({ cmd: 'signup' }, { email, password })
+                    .pipe(timeout(5000)),
+            );
+        } catch (error) {
+            handleRpcError(error);
+        }
     }
 
     async login(email: string, password: string) {
-        return await firstValueFrom(
-            this.client.send<AuthResponse, AuthRequest>(
-                { cmd: 'login' },
-                { email, password },
-            ),
-        );
+        try {
+            return await firstValueFrom(
+                this.client
+                    .send<
+                        AuthResponse,
+                        AuthRequest
+                    >({ cmd: 'login' }, { email, password })
+                    .pipe(timeout(5000)),
+            );
+        } catch (error) {
+            handleRpcError(error);
+        }
     }
 }

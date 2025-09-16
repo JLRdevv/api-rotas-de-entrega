@@ -6,14 +6,12 @@ export class AuthService {
     constructor(private authClient: AuthClient) {}
 
     async signup(email: string, password: string) {
-        const response = await this.authClient.signup(email, password);
-        if (response.error) throw new UnauthorizedException(response.message);
-        return response.token;
+        const response =  await this.authClient.signup(email, password);
+        return response.token
     }
 
     async login(email: string, password: string) {
-        const response = await this.authClient.login(email, password);
-        if (response.error) throw new UnauthorizedException(response.message);
-        return response.token;
+        const response =  await this.authClient.login(email, password);
+        return response.token
     }
 }
