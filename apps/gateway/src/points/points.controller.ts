@@ -1,36 +1,69 @@
-import { Controller, Get, Post, Patch, Delete } from '@nestjs/common';
+import {
+    Controller,
+    Get,
+    Post,
+    Patch,
+    Delete,
+    Body,
+    Param,
+    UseGuards,
+} from '@nestjs/common';
 import { PointsService } from './points.service';
+import { PointsDataDto } from './dtos/points-data.dto';
+import { UserId } from '../auth/decorators/current-user.decorator';
+import { DeletePointDto } from './dtos/delete-point.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+
 @Controller('pontos')
+@UseGuards(JwtAuthGuard)
 export class PointsController {
     constructor(private pointsService: PointsService) {}
 
     @Post('/')
-    insertPoints() {
-        return this.pointsService.insertPoints();
+    async insertPoints(@Body() body: PointsDataDto, @UserId() userId: string) {
+        return await this.pointsService.insertPoints(body.points, userId);
     }
 
     @Get('/')
-    getPoints() {
-        return this.pointsService.getPoints();
+    async getPoints(@UserId() userId: string) {
+        return await this.pointsService.getPoints(userId);
     }
 
     @Get('/:id')
-    getPoint() {
-        return this.pointsService.getPoint();
+    async getPoint(@Param('id') pointsId: string, @UserId() userId: string) {
+        return await this.pointsService.getPoint(userId, pointsId);
     }
 
     @Patch('/:id')
-    patchPoints() {
-        return this.pointsService.patchPoints();
+    async patchPoints(
+        @Body() body: PointsDataDto,
+        @Param('id') pointsId: string,
+        @UserId() userId: string,
+    ) {
+        return await this.pointsService.patchPoints(
+            userId,
+            pointsId,
+            body.points,
+        );
     }
 
     @Delete('/:id')
-    deletePoints() {
-        return this.pointsService.deletePoints();
+    async deletePoints(
+        @Param('id') pointsId: string,
+        @UserId() userId: string,
+    ) {
+        return await this.pointsService.deletePoints(userId, pointsId);
     }
 
     @Delete('/:pointsId/:pointId')
-    deletePoint() {
-        return this.pointsService.deletePoint();
+    async deletePoint(
+        @Param() params: DeletePointDto,
+        @UserId() userId: string,
+    ) {
+        return await this.pointsService.deletePoint(
+            userId,
+            params.pointsId,
+            params.pointId,
+        );
     }
 }

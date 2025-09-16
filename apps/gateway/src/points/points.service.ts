@@ -1,16 +1,32 @@
 import { Injectable } from '@nestjs/common';
+import { Point } from '@app/contracts';
+import { PointClient } from './point.client';
 
 @Injectable()
 export class PointsService {
-    insertPoints() {}
+    constructor(private pointClient: PointClient) {}
 
-    getPoints() {}
+    async insertPoints(points: Point[], userId: string) {
+        return await this.pointClient.addPoints(userId, points);
+    }
 
-    getPoint() {}
+    async getPoints(userId: string) {
+        return await this.pointClient.getPoints(userId);
+    }
 
-    patchPoints() {}
+    async getPoint(userId: string, pointsId: string) {
+        return await this.pointClient.getPoint(userId, pointsId);
+    }
 
-    deletePoints() {}
+    async patchPoints(userId: string, pointsId: string, points: Point[]) {
+        return await this.pointClient.patchPoints(userId, pointsId, points);
+    }
 
-    deletePoint() {}
+    async deletePoints(userId: string, pointsId: string) {
+        return await this.pointClient.deletePoints(userId, pointsId);
+    }
+
+    async deletePoint(userId: string, pointsId: string, pointId: number) {
+        return await this.pointClient.deletePoint(userId, pointsId, pointId);
+    }
 }
