@@ -42,9 +42,22 @@ export interface HistoryResponse {
 
 // delete route
 export interface DeleteRouteRequest {
-    routeId: string
+    routeId: string;
 }
 
 export interface DeleteRouteResponse {
-    deleted: boolean
+    deleted: boolean;
 }
+
+// single point
+export interface SinglePoint {
+    id: number;
+    x: number;
+    y: number;
+}
+
+// optimized route
+export type OptimizedRouteResult = {
+    optimizedRoute: (number | string)[];
+    totalDistance: number;
+};
