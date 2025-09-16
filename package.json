@@ -18,7 +18,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/desafio4/test/jest-e2e.json",
-    "prepare": "husky && chmod +x .husky/pre-push"
+    "prepare": "is-ci || (husky && chmod +x .husky/pre-push)"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -27,9 +27,11 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/microservices": "^11.1.6",
     "@nestjs/platform-express": "^11.0.1",
+    "amqp-connection-manager": "^4.1.14",
     "amqplib": "^0.10.9",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
+    "is-ci": "^4.1.0",
     "joi": "^18.0.1",
     "nestjs-pino": "^4.4.0",
     "reflect-metadata": "^0.2.2",

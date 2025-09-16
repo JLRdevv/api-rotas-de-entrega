@@ -22,7 +22,8 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@app": ["libs"]
+      "@app/common": ["libs/common/src"],
+      "@app/contracts": ["libs/contracts"]
     }
   }
 }
