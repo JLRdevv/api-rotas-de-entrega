@@ -18,6 +18,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/gateway/tsconfig.app.json"
       }
+    },
+    "route-optimization": {
+      "type": "application",
+      "root": "apps/route-optimization",
+      "entryFile": "main",
+      "sourceRoot": "apps/route-optimization/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/route-optimization/tsconfig.app.json"
+      }
     }
   }
 }
