@@ -1,0 +1,56 @@
+import {
+    ClientProxyFactory,
+    Transport,
+    ClientProxy,
+} from '@nestjs/microservices';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { firstValueFrom, timeout } from 'rxjs';
+import { AuthRequest, AuthResponse } from '@app/contracts';
+import { handleRpcError } from '../helpers/rpc-error.util';
+
+@Injectable()
+export class AuthClient {
+    private client: ClientProxy;
+
+    constructor(private configService: ConfigService) {
+        this.client = ClientProxyFactory.create({
+            transport: Transport.RMQ,
+            options: {
+                urls: [this.configService.get<string>('RMQ_URL')!],
+                queue: 'auth-queue',
+                queueOptions: { durable: true },
+            },
+        });
+    }
+
+    async signup(email: string, password: string): Promise<AuthResponse> {
+        try {
+            return await firstValueFrom(
+                this.client
+                    .send<
+                        AuthResponse,
+                        AuthRequest
+                    >({ cmd: 'signup' }, { email, password })
+                    .pipe(timeout(5000)),
+            );
+        } catch (error) {
+            handleRpcError(error);
+        }
+    }
+
+    async login(email: string, password: string) {
+        try {
+            return await firstValueFrom(
+                this.client
+                    .send<
+                        AuthResponse,
+                        AuthRequest
+                    >({ cmd: 'login' }, { email, password })
+                    .pipe(timeout(5000)),
+            );
+        } catch (error) {
+            handleRpcError(error);
+        }
+    }
+}

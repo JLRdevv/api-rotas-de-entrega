@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { MongoRepository } from 'typeorm'
 import { Point } from './entities/point.entity'
-import { CreatePointDto } from './dto/create-point.dto'
+import { CreatePointDto } from './entities/dto/create-point.dto'
 import { ObjectId } from 'mongodb'
 
 @Injectable()

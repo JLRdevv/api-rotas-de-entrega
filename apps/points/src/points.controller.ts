@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common'
 import { MessagePattern, Payload } from '@nestjs/microservices'
 import { PointService } from './point.service'
-import { CreatePointDto } from './dto/create-point.dto'
+import { CreatePointDto } from './entities/dto/create-point.dto'
 
 @Controller('points')
 export class PointsController {
