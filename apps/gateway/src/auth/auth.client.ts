@@ -6,6 +6,7 @@ import {
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
+import { AuthRequest, AuthResponse } from '@app/contracts';
 
 @Injectable()
 export class AuthClient {
@@ -22,15 +23,21 @@ export class AuthClient {
         });
     }
 
-    async signup(email: string, password: string) {
+    async signup(email: string, password: string): Promise<AuthResponse> {
         return await firstValueFrom(
-            this.client.send({cmd: "signup"}, {email, password})
-        )
+            this.client.send<AuthResponse, AuthRequest>(
+                { cmd: 'signup' },
+                { email, password },
+            ),
+        );
     }
 
     async login(email: string, password: string) {
         return await firstValueFrom(
-            this.client.send({cmd: "login"}, {email, password})
-        )
+            this.client.send<AuthResponse, AuthRequest>(
+                { cmd: 'login' },
+                { email, password },
+            ),
+        );
     }
 }

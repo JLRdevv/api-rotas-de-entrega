@@ -7,7 +7,8 @@ import { Logger } from 'nestjs-pino';
 async function bootstrap() {
     const app = await NestFactory.create(GatewayModule);
     app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-    app.useLogger(app.get(Logger));
+    // uncomment when common lib is done
+    // app.useLogger(app.get(Logger));
     const configService = app.get(ConfigService);
     await app.listen(configService.get('HTTP_PORT')!);
 }
