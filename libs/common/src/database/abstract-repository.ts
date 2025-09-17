@@ -1,9 +1,9 @@
 import { MongoRepository } from 'typeorm';
 import { ObjectId } from 'mongodb';
-import { AbstractDocument } from './abstract-document';
+import { AbstractEntity } from './abstract-entity';
 import { Logger, NotFoundException } from '@nestjs/common';
 
-export abstract class AbstractRepository<T extends AbstractDocument> {
+export abstract class AbstractRepository<T extends AbstractEntity> {
   protected abstract readonly logger: Logger;
 
   constructor(protected readonly repository: MongoRepository<T>) {}
@@ -13,13 +13,11 @@ export abstract class AbstractRepository<T extends AbstractDocument> {
   }
 
   async findById(_id: ObjectId): Promise<T> {
-    const entity = await this.repository.findOneBy(_id);
+    const entity = await this.repository.findOneBy({ _id });
     if (!entity) {
-      this.logger.warn(
-        `Nenhum registro encontrado com id ${_id.toHexString()}`,
-      );
+      this.logger.warn(`No registers found with ${_id.toHexString()}`);
       throw new NotFoundException(
-        `Nenhum registro encontrado com id ${_id.toHexString()}`,
+        `No registers found with ${_id.toHexString()}`,
       );
     }
     return entity;
@@ -31,28 +29,27 @@ export abstract class AbstractRepository<T extends AbstractDocument> {
   }
 
   async update(_id: ObjectId, partialEntity: Partial<T>): Promise<T> {
-    const result = await this.repository.updateOne(_id, {
-      $set: partialEntity,
-    });
+    const result = await this.repository.updateOne(
+      { _id },
+      {
+        $set: partialEntity,
+      },
+    );
     if (result.matchedCount === 0) {
-      this.logger.warn(
-        `Nenhum registro encontrado com id ${_id.toHexString()}`,
-      );
+      this.logger.warn(`No registers found with ${_id.toHexString()}`);
       throw new NotFoundException(
-        `Nenhum registro encontrado com id ${_id.toHexString()}`,
+        `No registers found with ${_id.toHexString()}`,
       );
     }
     return this.findById(_id);
   }
 
   async delete(_id: ObjectId): Promise<void> {
-    const result = await this.repository.deleteOne(_id);
+    const result = await this.repository.deleteOne({ _id });
     if (result.deletedCount === 0) {
-      this.logger.warn(
-        `Nenhum registro encontrado com id ${_id.toHexString()}`,
-      );
+      this.logger.warn(`No registers found with ${_id.toHexString()}`);
       throw new NotFoundException(
-        `Nenhum registro encontrado com id ${_id.toHexString()}`,
+        `No registers found with ${_id.toHexString()}`,
       );
     }
   }
