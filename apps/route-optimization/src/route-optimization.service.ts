@@ -7,10 +7,13 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ObjectId } from 'mongodb';
-
 import { SinglePoint, OptimizedRouteResult } from '@app/contracts';
-
 import { optimizeRoute, validateStartingPoint } from '@app/utils';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Route } from './route.entity';
+import { HistoryQueryParamsDto } from '../../gateway/src/routes/dtos/history-query-params.dto'
+
 
 interface PointsPayload {
     points: SinglePoint[];
@@ -21,6 +24,7 @@ export class RouteOptimizationService {
     constructor(
         // Injeção do cliente RabbitMQ para futura comunicação com o points-service
         @Inject('POINTS_SERVICE') private pointsServiceClient: ClientProxy,
+        @InjectRepository(Route) private routeRepo: Repository<Route>,
     ) {}
 
     public async calculateAndOptimizeRoute(payload: {
@@ -37,27 +41,27 @@ export class RouteOptimizationService {
             );
         }
 
-        // --- DESENVOLVIMENTO COM DADOS MOCADOS ---
-        console.log('--- DEVELOPMENT MODE: Using mocked data for points ---');
-        const mockedPointsPayload: PointsPayload = {
-            points: [
-                { id: 1, x: 0, y: 0 },
-                { id: 2, x: 50, y: 30 },
-                { id: 3, x: 10, y: 80 },
-                { id: 4, x: 90, y: 20 },
-                { id: 5, x: 45, y: 60 },
-            ],
-        };
-        const pointsPayload = mockedPointsPayload;
+        // // --- DESENVOLVIMENTO COM DADOS MOCADOS ---
+        // console.log('--- DEVELOPMENT MODE: Using mocked data for points ---');
+        // const mockedPointsPayload: PointsPayload = {
+        //     points: [
+        //         { id: 1, x: 0, y: 0 },
+        //         { id: 2, x: 50, y: 30 },
+        //         { id: 3, x: 10, y: 80 },
+        //         { id: 4, x: 90, y: 20 },
+        //         { id: 5, x: 45, y: 60 },
+        //     ],
+        // };
+        // const pointsPayload = mockedPointsPayload;
 
-        /*
-    // --- CHAMADA REAL VIA RABBITMQ (usar no futuro) ---
+// CHAMADA REAL VIA RABBITMQ  
     const pointsPayload: PointsPayload = await this.pointsServiceClient
-        .send('get_points_by_id', { id: pointsId, userId }) // O pattern 'get_points_by_id' é um exemplo
-        .toPromise();
-    */
+        .send('get_points_by_id', { id: pointsId, userId })
+        .toPromise() as PointsPayload;
+        console.log('points received');
+    
 
-        if (!pointsPayload) {
+        if (!pointsPayload || !pointsPayload.points) {
             throw new NotFoundException(
                 `Points with ID ${pointsId} not found.`,
             );
@@ -93,6 +97,80 @@ export class RouteOptimizationService {
         );
         console.log('Calculation finished.');
 
-        return calculatedRoute;
+        const date = new Date();
+        const routeEntity = this.routeRepo.create({
+            results: {
+                optimizedRoute: calculatedRoute.optimizedRoute,
+                totalDistance: calculatedRoute.totalDistance,
+            },
+            date,
+            pointsId,
+            userId,
+        });
+
+        console.log('Save route in Db');
+        const savedEntity = await this.routeRepo.save(routeEntity);
+
+        return savedEntity.results;
+    }
+
+    //Get history
+    async history(queryParams: HistoryQueryParamsDto, userId: string) {
+        if (!ObjectId.isValid(userId))
+            throw new BadRequestException('Invalid id');
+        try {
+            let filters: Record<string, any> = {
+                userId,
+            };
+            if (queryParams.pointsId) {
+                filters = {
+                    ...filters,
+                    pointsId: queryParams.pointsId,
+                };
+            }
+            if (Array.isArray(queryParams.date)) {
+                const { from, to } = dateFiltering(queryParams.date);
+                filters = {
+                    ...filters,
+                    date: {
+                        $gte: from,
+                        $lte: to,
+                    },
+                };
+            }
+            const route = await this.routeRepo.find({
+                where: filters,
+                skip: queryParams.offset,
+                take: queryParams.limit,
+                order: { date: 'DESC' },
+            });
+            if (route.length == 0)
+                throw new NotFoundException('No routes found');
+            return route;
+        } catch (error) {
+            if (error instanceof HttpException) throw error;
+            throw new InternalServerErrorException('Failed to reach database');
+        }
+    }
+    //Delete route
+    public async deleteRoute(routeId: string, userId: string): Promise<{ deleted: boolean }> {
+        if (!ObjectId.isValid(routeId) || !ObjectId.isValid(userId)) {
+            throw new BadRequestException('Invalid id');
+        }
+        try {
+            const route = await this.routeRepo.findOne({
+                where: { _id: new ObjectId(routeId), userId },
+            });
+
+            if (!route) {
+                throw new NotFoundException('Route not found');
+            }
+
+            await this.routeRepo.delete({ _id: new ObjectId(routeId) });
+            return { deleted: true };
+        } catch (error) {
+            if (error instanceof HttpException) throw error;
+            throw new InternalServerErrorException('Failed to reach database');
+        }
     }
 }

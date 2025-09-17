@@ -20,4 +20,15 @@ export class RouteOptimizationController {
         console.log(`Message 'optimize_route' received with payload:`, data);
         return this.routeOptService.calculateAndOptimizeRoute(data);
     }
+
+    @MessagePattern({ cmd: 'get_history' })
+    handleGetHistory(@Payload() data: { queryParams: any; userId: string }) {
+        return this.routeOptService.history(data.queryParams, data.userId);
+    }
+
+    // NOVO: Handler para deletar a rota
+    @MessagePattern({ cmd: 'delete_route' })
+    handleDeleteRoute(@Payload() data: { routeId: string; userId: string }) {
+        return this.routeOptService.deleteRoute(data.routeId, data.userId);
+    }
 }
