@@ -5,7 +5,7 @@ import { CreatePointDto } from './entities/dto/create-point.dto';
 
 @Controller()
 export class PointsController {
-  constructor(private readonly pointsService: PointService) {}
+    constructor(private readonly pointsService: PointService) {}
 
     @MessagePattern({ cmd: 'create-point' })
     async createPoint(@Payload() createPointDto: CreatePointDto) {
