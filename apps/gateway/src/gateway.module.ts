@@ -5,6 +5,8 @@ import { RoutesModule } from './routes/routes.module';
 import { AppModule } from './app/app.module';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { LoggerModule } from '@app/common';
+import * as Joi from 'joi';
 
 @Module({
     imports: [
@@ -16,7 +18,14 @@ import { ThrottlerModule } from '@nestjs/throttler';
         ]),
         ConfigModule.forRoot({
             isGlobal: true,
+            validationSchema: Joi.object({
+                HTTP_PORT: Joi.number().required(),
+                RMQ_URL: Joi.string().required(),
+                JWT_SECRET: Joi.string().required(),
+                COOKIE_SECRET: Joi.string().required(),
+            }),
         }),
+        LoggerModule,
         AuthModule,
         PointsModule,
         RoutesModule,
