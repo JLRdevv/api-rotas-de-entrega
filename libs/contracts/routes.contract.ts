@@ -42,9 +42,9 @@ export interface HistoryResponse {
 
 // delete route
 export interface DeleteRouteRequest {
-    routeId: string
+    routeId: string;
 }
 
 export interface DeleteRouteResponse {
-    deleted: boolean
+    deleted: boolean;
 }
