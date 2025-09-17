@@ -4,12 +4,18 @@
   "sourceRoot": "apps/desafio4/",
   "compilerOptions": {
     "deleteOutDir": true,
-    "webpack": true,
-    "tsConfigPath": "apps/desafio4/tsconfig.app.json"
+    "webpack": true
   },
-  "monorepo": true,
-  "root": "apps/gateway",
   "projects": {
+    "common": {
+      "type": "library",
+      "root": "libs/common",
+      "entryFile": "index",
+      "sourceRoot": "libs/common/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/common/tsconfig.lib.json"
+      }
+    },
     "gateway": {
       "type": "application",
       "root": "apps/gateway",
