@@ -128,7 +128,7 @@ export class PointClient {
     async deletePoint(
         userId: string,
         pointsId: string,
-        pointId: number
+        pointId: number,
     ): Promise<DeletePointResponse> {
         try {
             return await firstValueFrom(
