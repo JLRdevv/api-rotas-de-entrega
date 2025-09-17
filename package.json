@@ -97,8 +97,14 @@
       "<rootDir>/src/",
       "<rootDir>/libs/"
     ],
+     "modulePaths": [
+      "<rootDir>/apps/",
+      "<rootDir>/src/",
+      "<rootDir>/libs/"
+    ],
     "moduleNameMapper": {
-      "^@app/common(|/.*)$": "<rootDir>/libs/common/src/$1"
+      "^@app/common(|/.*)$": "<rootDir>/libs/common/src/$1",
+      "^@app/utils(|/.*)$": "<rootDir>/libs/utils/src/$1"
     }
   }
 }

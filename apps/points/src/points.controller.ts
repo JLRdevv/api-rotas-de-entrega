@@ -7,13 +7,13 @@ import { CreatePointDto } from './entities/dto/create-point.dto';
 export class PointsController {
   constructor(private readonly pointsService: PointService) {}
 
-  @MessagePattern({ cmd: 'create-point' })
-  async createPoint(@Payload() createPointDto: CreatePointDto) {
-    return this.pointsService.create(createPointDto);
-  }
+    @MessagePattern({ cmd: 'create-point' })
+    async createPoint(@Payload() createPointDto: CreatePointDto) {
+        return this.pointsService.create(createPointDto);
+    }
 
-  @MessagePattern({ cmd: 'get-points-by-id' })
-  async getPointsById(@Payload('id') id: string) {
-    return this.pointsService.findById(id);
-  }
+    @MessagePattern({ cmd: 'get-points-by-id' })
+    async getPointsById(@Payload('id') id: string) {
+        return this.pointsService.findById(id);
+    }
 }

@@ -1,27 +1,27 @@
 import {
-  IsNotEmpty,
-  IsNumber,
-  IsObject,
-  ValidateNested,
+    IsNotEmpty,
+    IsNumber,
+    IsObject,
+    ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CoordinatesDto {
-  @IsNumber()
-  @IsNotEmpty()
-  x: number;
+    @IsNumber()
+    @IsNotEmpty()
+    x: number;
 
-  @IsNumber()
-  @IsNotEmpty()
-  y: number;
+    @IsNumber()
+    @IsNotEmpty()
+    y: number;
 }
 
 export class CreatePointDto {
-  @IsNotEmpty()
-  name: string;
+    @IsNotEmpty()
+    name: string;
 
-  @IsObject()
-  @ValidateNested()
-  @Type(() => CoordinatesDto)
-  coordinates: CoordinatesDto;
+    @IsObject()
+    @ValidateNested()
+    @Type(() => CoordinatesDto)
+    coordinates: CoordinatesDto;
 }
