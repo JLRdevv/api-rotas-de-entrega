@@ -4,10 +4,16 @@ import { PointsModule } from './points/points.module';
 import { RoutesModule } from './routes/routes.module';
 import { AppModule } from './app/app.module';
 import { ConfigModule } from '@nestjs/config';
-import * as path from 'path';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
     imports: [
+        ThrottlerModule.forRoot([
+            {
+                ttl: 60000,
+                limit: 120,
+            },
+        ]),
         ConfigModule.forRoot({
             isGlobal: true,
         }),
