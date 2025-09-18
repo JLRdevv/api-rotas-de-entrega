@@ -105,4 +105,15 @@ export class RouteClient {
             handleRpcError(error);
         }
     }
+
+    async healthCheck() {
+        try {
+            const result = await firstValueFrom(
+                this.client.send({ cmd: 'health' }, {}).pipe(timeout(5000)),
+            );
+            return !!result;
+        } catch (error) {
+            return false;
+        }
+    }
 }

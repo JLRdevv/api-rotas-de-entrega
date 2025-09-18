@@ -128,7 +128,7 @@ export class PointClient {
     async deletePoint(
         userId: string,
         pointsId: string,
-        pointId: number
+        pointId: number,
     ): Promise<DeletePointResponse> {
         try {
             return await firstValueFrom(
@@ -141,6 +141,17 @@ export class PointClient {
             );
         } catch (error) {
             handleRpcError(error);
+        }
+    }
+
+    async healthCheck() {
+        try {
+            const result = await firstValueFrom(
+                this.client.send({ cmd: 'health' }, {}).pipe(timeout(5000)),
+            );
+            return !!result;
+        } catch (error) {
+            return false;
         }
     }
 }
