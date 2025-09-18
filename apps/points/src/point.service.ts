@@ -90,7 +90,8 @@ export class PointService {
                     points: result.points,
                 },
             };
-        } catch {
+        } catch (error) {
+            if (error instanceof HttpException) throw error;
             throw new InternalServerErrorException('Failed to reach database');
         }
     }

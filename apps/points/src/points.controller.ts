@@ -54,4 +54,9 @@ export class PointsController {
     ): Promise<DeletePointResponse> {
         return this.pointService.deletePoint(data);
     }
+
+    @MessagePattern({ cmd: 'health' })
+    health(): boolean {
+        return true;
+    }
 }
