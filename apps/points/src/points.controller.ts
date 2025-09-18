@@ -1,19 +1,57 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { PointService } from './point.service';
-import { CreatePointDto } from './entities/dto/create-point.dto';
+import type {
+    AddPointsRequest,
+    AddPointsResponse,
+    GetPointsRequest,
+    GetPointsResponse,
+    FindPointRequest,
+    FindPointResponse,
+    PatchPointsRequest,
+    PatchPointsResponse,
+    DeletePointsResponse,
+    DeletePointResponse,
+    DeletePointRequest,
+} from '@app/contracts';
 
-@Controller('points')
+@Controller()
 export class PointsController {
-    constructor(private readonly pointsService: PointService) {}
+    constructor(private readonly pointService: PointService) {}
 
-    @MessagePattern({ cmd: 'create-point' })
-    async createPoint(@Payload() createPointDto: CreatePointDto) {
-        return this.pointsService.create(createPointDto);
+    @MessagePattern({ cmd: 'addPoints' })
+    addPoints(@Payload() data: AddPointsRequest): Promise<AddPointsResponse> {
+        return this.pointService.addPoints(data);
     }
 
-    @MessagePattern({ cmd: 'get-points-by-id' })
-    async getPointsById(@Payload('id') id: string) {
-        return this.pointsService.findById(id);
+    @MessagePattern({ cmd: 'getPoints' })
+    getPoints(@Payload() data: GetPointsRequest): Promise<GetPointsResponse> {
+        return this.pointService.getPoints(data);
+    }
+
+    @MessagePattern({ cmd: 'getPoint' })
+    getPoint(@Payload() data: FindPointRequest): Promise<FindPointResponse> {
+        return this.pointService.getPoint(data);
+    }
+
+    @MessagePattern({ cmd: 'patchPoints' })
+    patchPoints(
+        @Payload() data: PatchPointsRequest,
+    ): Promise<PatchPointsResponse> {
+        return this.pointService.patchPoint(data);
+    }
+
+    @MessagePattern({ cmd: 'deletePoints' })
+    deletePoints(
+        @Payload() data: FindPointRequest,
+    ): Promise<DeletePointsResponse> {
+        return this.pointService.deletePoints(data);
+    }
+
+    @MessagePattern({ cmd: 'deletePoint' })
+    deletePoint(
+        @Payload() data: DeletePointRequest,
+    ): Promise<DeletePointResponse> {
+        return this.pointService.deletePoint(data);
     }
 }

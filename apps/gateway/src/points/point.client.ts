@@ -18,7 +18,7 @@ import {
     PatchPointsRequest,
     DeletePointsResponse,
     DeletePointResponse,
-    deletePointRequest,
+    DeletePointRequest,
 } from '@app/contracts';
 import { handleRpcError } from '../helpers/rpc-error.util';
 
@@ -135,7 +135,7 @@ export class PointClient {
                 this.client
                     .send<
                         DeletePointResponse,
-                        deletePointRequest
+                        DeletePointRequest
                     >({ cmd: 'deletePoint' }, { userId, pointsId, pointId })
                     .pipe(timeout(5000)),
             );

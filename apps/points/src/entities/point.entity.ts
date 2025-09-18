@@ -1,17 +1,14 @@
-import { Entity, ObjectIdColumn, Column } from 'typeorm';
-import { ObjectId } from 'mongodb';
+import { Entity, Column, ObjectIdColumn, ObjectId } from 'typeorm';
+import type { Point } from '../interfaces/point.interface';
 
-@Entity()
-export class Point {
+@Entity('points')
+export class PointEntity {
     @ObjectIdColumn()
     id: ObjectId;
 
     @Column()
-    name: string;
+    userId: ObjectId;
 
     @Column()
-    coordinates: {
-        x: number;
-        y: number;
-    };
+    points: Point[];
 }
