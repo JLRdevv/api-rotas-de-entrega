@@ -4,6 +4,8 @@ import {
     BadRequestException,
     NotFoundException,
     UnprocessableEntityException,
+    InternalServerErrorException,
+    HttpException,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ObjectId } from 'mongodb';
@@ -12,7 +14,8 @@ import { optimizeRoute, validateStartingPoint } from '@app/utils';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Route } from './route.entity';
-import { HistoryQueryParamsDto } from '../../gateway/src/routes/dtos/history-query-params.dto'
+import { historyFilters } from '@app/contracts'
+import { dateFiltering } from '@app/utils';
 
 
 interface PointsPayload {
@@ -97,16 +100,21 @@ export class RouteOptimizationService {
         );
         console.log('Calculation finished.');
 
-        const date = new Date();
-        const routeEntity = this.routeRepo.create({
-            results: {
-                optimizedRoute: calculatedRoute.optimizedRoute,
-                totalDistance: calculatedRoute.totalDistance,
-            },
-            date,
-            pointsId,
-            userId,
-        });
+        const numericRoute = calculatedRoute.optimizedRoute.filter(
+            (point): point is number => typeof point === 'number',
+        );
+
+        const date = new Date();
+        const routeEntity = this.routeRepo.create({
+            results: {
+                // Usa o array filtrado e seguro
+                optimizedRoute: numericRoute, 
+                totalDistance: calculatedRoute.totalDistance,
+            },
+            date,
+            pointsId,
+            userId,
+        });
 
         console.log('Save route in Db');
         const savedEntity = await this.routeRepo.save(routeEntity);
@@ -115,7 +123,7 @@ export class RouteOptimizationService {
     }
 
     //Get history
-    async history(queryParams: HistoryQueryParamsDto, userId: string) {
+    async history(queryParams: historyFilters, userId: string) {
         if (!ObjectId.isValid(userId))
             throw new BadRequestException('Invalid id');
         try {

@@ -94,7 +94,7 @@
         "coverageDirectory": "./coverage",
         "testEnvironment": "node",
         "roots": [
-            "<rootDir>/src/",
+            "<rootDir>/apps/",
             "<rootDir>/libs/"
         ],
         "modulePaths": [

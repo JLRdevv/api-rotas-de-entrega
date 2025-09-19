@@ -2,8 +2,8 @@
 import { Entity, Column, ObjectIdColumn, ObjectId } from 'typeorm';
 
 interface Results {
-    optimizedRoute: Number[];
-    totalDistance: Number;
+    optimizedRoute: number[];
+    totalDistance: number;
 }
 
 @Entity()
