@@ -35,6 +35,21 @@ services:
         volumes:
             - .:/usr/src/app
             - /usr/src/app/node_modules
+
+    route-optimization:
+        build:
+            context: .
+            dockerfile: ./apps/route-optimization/Dockerfile
+            target: development
+        command: pnpm run start:dev route-optimization
+        env_file:
+            - ./apps/route-optimization/.env
+        depends_on:
+            - rabbitmq
+        volumes:
+            - .:/usr/src/app
+            - /usr/src/app/node_modules
+
 volumes:
     mongo_data:
     rabbit_data:
