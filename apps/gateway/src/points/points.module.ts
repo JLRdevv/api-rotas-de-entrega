@@ -6,5 +6,6 @@ import { PointClient } from './point.client';
 @Module({
     controllers: [PointsController],
     providers: [PointsService, PointClient],
+    exports: [PointClient]
 })
 export class PointsModule {}

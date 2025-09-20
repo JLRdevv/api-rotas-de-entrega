@@ -6,5 +6,6 @@ import { RouteClient } from './route.client';
 @Module({
     controllers: [RoutesController],
     providers: [RoutesService, RouteClient],
+    exports: [RouteClient]
 })
 export class RoutesModule {}
