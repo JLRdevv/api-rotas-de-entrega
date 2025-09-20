@@ -1,21 +1,26 @@
 import { NestFactory } from '@nestjs/core';
 import { Transport } from '@nestjs/microservices';
 import { PointsModule } from './points.module';
-import * as dotenv from 'dotenv';
+import { ConfigService } from '@nestjs/config';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
-    dotenv.config({ path: 'config/rmq.env' });
-
-    const app = await NestFactory.createMicroservice(PointsModule, {
+    const app = await NestFactory.create(PointsModule);
+    const configService = app.get(ConfigService);
+    app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+    app.connectMicroservice({
         transport: Transport.RMQ,
         options: {
-            urls: [process.env.RABBITMQ_URL],
+            urls: [configService.get('RMQ_URL')],
             queue: 'points_queue',
-            queueOptions: {
-                durable: false,
-            },
+            queueOptions: { durable: false },
         },
     });
-    await app.listen();
+
+    await app.startAllMicroservices();
+    await app.listen(configService.get('HTTP_PORT')!);
 }
-bootstrap();
+bootstrap().catch((err) => {
+    console.error('Bootstrap failed', err);
+    process.exit(1);
+});

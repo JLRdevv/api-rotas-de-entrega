@@ -35,6 +35,22 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
+  points:
+    build:
+      context: .
+      dockerfile: ./apps/points/Dockerfile
+      target: development
+    command: pnpm run start:dev points
+    env_file:
+      - ./apps/points/.env
+    ports:
+      - '3001:3001'
+    depends_on:
+      - mongo
+      - rabbitmq
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
 volumes:
   mongo_data:
   rabbit_data:
