@@ -28,12 +28,17 @@ export interface AddRouteResponse {
 }
 
 // history
-export interface HistoryRequest {
-    userId: string;
+
+export interface historyFilters {
     limit?: number;
     offset?: number;
     date?: string[];
-    pointsId: string;
+    pointsId?: string;
+}
+
+export interface HistoryRequest {
+    userId: string;
+    filters?: historyFilters;
 }
 
 export interface HistoryResponse {
@@ -42,6 +47,10 @@ export interface HistoryResponse {
 
 // delete route
 export interface DeleteRouteRequest {
+<<<<<<< HEAD
+=======
+    userId: string;
+>>>>>>> b41ea1c689d2bb8d829689d413cba67e9d723728
     routeId: string;
 }
 

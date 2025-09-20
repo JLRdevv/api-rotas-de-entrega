@@ -23,6 +23,7 @@ services:
       - rabbit_data:/var/lib/rabbitmq
 
   gateway:
+    container_name: gateway
     build:
       context: .
       dockerfile: ./apps/gateway/Dockerfile

@@ -46,5 +46,6 @@ import * as Joi from 'joi';
     ],
     controllers: [PointsController],
     providers: [PointService],
+    exports: [PointService],
 })
 export class PointsModule {}
