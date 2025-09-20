@@ -17,11 +17,11 @@ export interface AddRouteRequest {
 }
 
 // create route with starting point
-// export interface AddRouteRequestWithStartPoint {
-//     userId: string;
-//     pointsId: string;
-//     pointId: number;
-// }
+export interface AddRouteRequestWithStartPoint {
+    userId: string;
+    pointsId: string;
+    pointId: number;
+}
 
 // Default response for both cases
 export interface AddRouteResponse {
