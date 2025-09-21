@@ -1,0 +1,136 @@
+{
+	"info": {
+		"_postman_id": "62953960-6aea-4223-8c9a-00733be18853",
+		"name": "Desafio 4",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38980869"
+	},
+	"item": [
+		{
+			"name": "points",
+			"item": []
+		},
+		{
+			"name": "globalHealth",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pointsHealth",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3001/health",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "insertPoints",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"points\": [\r\n        {\"id\": 1, \"x\": 1, \"y\": 1 },\r\n        {\"id\": 2, \"x\": 2, \"y\": 2 },\r\n        {\"id\": 3, \"x\": 3, \"y\": 3 },\r\n        {\"id\": 4, \"x\": 4, \"y\": 4 }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/pontos/",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"pontos",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getPoints",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:3000/pontos",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"pontos"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": ""
+		}
+	]
+}

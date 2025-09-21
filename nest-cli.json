@@ -1,18 +1,10 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-<<<<<<< HEAD
-  "sourceRoot": "apps/gateway/src",
-  "compilerOptions": {
-    "deleteOutDir": true,
-    "webpack": true,
-    "tsConfigPath": "apps/gateway/tsconfig.app.json"
-=======
   "sourceRoot": "apps/desafio4/",
   "compilerOptions": {
     "deleteOutDir": true,
     "webpack": true
->>>>>>> b41ea1c689d2bb8d829689d413cba67e9d723728
   },
   "projects": {
     "common": {

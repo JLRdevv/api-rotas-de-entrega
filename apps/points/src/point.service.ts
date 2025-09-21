@@ -27,6 +27,7 @@ import {
     sortIds,
     updatePoints,
 } from './utils/points.util';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class PointService {
@@ -75,7 +76,7 @@ export class PointService {
     async getPoint(data: FindPointRequest): Promise<FindPointResponse> {
         try {
             const result = await this.pointsRepository.findOne({
-                where: { _id: data.pointId },
+                where: { _id: new ObjectId(data.pointId) },
             });
 
             if (!result) {
@@ -99,7 +100,7 @@ export class PointService {
     async patchPoint(data: PatchPointsRequest): Promise<PatchPointsResponse> {
         try {
             const dbPoints = await this.pointsRepository.findOne({
-                where: { _id: data.pointsId },
+                where: { _id: new ObjectId(data.pointsId) },
             });
             if (!dbPoints) throw new NotFoundException('point not found');
 
@@ -126,7 +127,7 @@ export class PointService {
     async deletePoints(data: FindPointRequest): Promise<DeletePointsResponse> {
         try {
             const point = await this.pointsRepository.findOne({
-                where: { _id: data.pointId },
+                where: { _id: new ObjectId(data.pointId) },
             });
 
             if (!point) throw new NotFoundException('Points not found');
@@ -142,7 +143,7 @@ export class PointService {
     async deletePoint(data: DeletePointRequest): Promise<DeletePointResponse> {
         try {
             const point = await this.pointsRepository.findOne({
-                where: { _id: data.pointsId },
+                where: { _id: new ObjectId(data.pointsId) },
             });
 
             if (!point) throw new NotFoundException('Points not found');

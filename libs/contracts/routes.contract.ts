@@ -47,10 +47,7 @@ export interface HistoryResponse {
 
 // delete route
 export interface DeleteRouteRequest {
-<<<<<<< HEAD
-=======
     userId: string;
->>>>>>> b41ea1c689d2bb8d829689d413cba67e9d723728
     routeId: string;
 }
 

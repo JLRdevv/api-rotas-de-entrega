@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsInt, IsPositive, IsObject } from 'class-validator';
+import { IsNotEmpty, IsInt, IsPositive } from 'class-validator';
 
 export class PointDto {
     @IsNotEmpty()

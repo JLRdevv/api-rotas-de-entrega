@@ -32,39 +32,24 @@ importers:
       '@nestjs/platform-express':
         specifier: ^11.0.1
         version: 11.1.6(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)
-<<<<<<< HEAD
-      '@nestjs/typeorm':
-        specifier: ^11.0.0
-        version: 11.0.0(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.26(mongodb@6.20.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@22.18.1)(typescript@5.9.2)))
-=======
       '@nestjs/throttler':
         specifier: ^6.4.0
         version: 6.4.0(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(reflect-metadata@0.2.2)
       '@nestjs/typeorm':
         specifier: ^11.0.0
-        version: 11.0.0(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.26(mongodb@6.19.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@22.18.1)(typescript@5.9.2)))
+        version: 11.0.0(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.26(mongodb@6.20.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@22.18.1)(typescript@5.9.2)))
       amqp-connection-manager:
         specifier: ^4.1.14
         version: 4.1.14(amqplib@0.10.9)
       amqplib:
         specifier: ^0.10.9
         version: 0.10.9
->>>>>>> b41ea1c689d2bb8d829689d413cba67e9d723728
       class-transformer:
         specifier: ^0.5.1
         version: 0.5.1
       class-validator:
         specifier: ^0.14.2
         version: 0.14.2
-<<<<<<< HEAD
-      cookie-session:
-        specifier: ^2.1.1
-        version: 2.1.1
-      dotenv:
-        specifier: ^17.2.2
-        version: 17.2.2
-=======
->>>>>>> b41ea1c689d2bb8d829689d413cba67e9d723728
       is-ci:
         specifier: ^4.1.0
         version: 4.1.0
@@ -72,13 +57,8 @@ importers:
         specifier: ^18.0.1
         version: 18.0.1
       mongodb:
-<<<<<<< HEAD
-        specifier: ^6.20.0
-        version: 6.20.0
-=======
         specifier: ^6.19.0
-        version: 6.19.0
->>>>>>> b41ea1c689d2bb8d829689d413cba67e9d723728
+        version: 6.20.0
       nestjs-pino:
         specifier: ^4.4.0
         version: 4.4.0(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(pino-http@10.5.0)(pino@9.9.5)(rxjs@7.8.2)
@@ -105,11 +85,7 @@ importers:
         version: 7.8.2
       typeorm:
         specifier: ^0.3.26
-<<<<<<< HEAD
         version: 0.3.26(mongodb@6.20.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@22.18.1)(typescript@5.9.2))
-=======
-        version: 0.3.26(mongodb@6.19.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@22.18.1)(typescript@5.9.2))
->>>>>>> b41ea1c689d2bb8d829689d413cba67e9d723728
     devDependencies:
       '@commitlint/cli':
         specifier: ^19.8.1
@@ -948,8 +924,6 @@ packages:
       '@nestjs/platform-express':
         optional: true
 
-<<<<<<< HEAD
-=======
   '@nestjs/throttler@6.4.0':
     resolution: {integrity: sha512-osL67i0PUuwU5nqSuJjtUJZMkxAnYB4VldgYUMGzvYRJDCqGRFMWbsbzm/CkUtPLRL30I8T74Xgt/OQxnYokiA==}
     peerDependencies:
@@ -957,7 +931,6 @@ packages:
       '@nestjs/core': ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0
       reflect-metadata: ^0.1.13 || ^0.2.0
 
->>>>>>> b41ea1c689d2bb8d829689d413cba67e9d723728
   '@nestjs/typeorm@11.0.0':
     resolution: {integrity: sha512-SOeUQl70Lb2OfhGkvnh4KXWlsd+zA08RuuQgT7kKbzivngxzSo1Oc7Usu5VxCxACQC9wc2l9esOHILSJeK7rJA==}
     peerDependencies:
@@ -1574,12 +1547,9 @@ packages:
     resolution: {integrity: sha512-WIsKqkSC0ABoBJuT1LEX+2HEvNmNKKgnTAyd0fL8qzK4SH2i9NXg+t08YtdZp/V9IZ33cxe3iV4yM0qg8lMQng==}
     engines: {node: '>=16.20.1'}
 
-<<<<<<< HEAD
-=======
   buffer-equal-constant-time@1.0.1:
     resolution: {integrity: sha512-zRpUiDwd/xk6ADqPMATG8vc9VPrkck7T07OIx0gnjmJAnHnTVXNQG3vfvWNuiZIkwu9KrKdA1iJKfsfTVxE6NA==}
 
->>>>>>> b41ea1c689d2bb8d829689d413cba67e9d723728
   buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
 
@@ -1815,24 +1785,11 @@ packages:
     resolution: {integrity: sha512-wAV9QHOsNbwnWdNW2FYvE1P56wtgSbM+3SZcdGiWQILwVjACCXDCI3Ai8QlCjMDB8YK5zySiXZYBiwGmNY3lnw==}
     engines: {node: '>=12'}
 
-<<<<<<< HEAD
-  dayjs@1.11.18:
-    resolution: {integrity: sha512-zFBQ7WFRvVRhKcWoUh+ZA1g2HVgUbsZm9sbddh8EC5iv93sui8DVVz1Npvz+r6meo9VKfa8NyLWBsQK1VvIKPA==}
-
-  debug@3.2.7:
-    resolution: {integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==}
-    peerDependencies:
-      supports-color: '*'
-    peerDependenciesMeta:
-      supports-color:
-        optional: true
-=======
   dateformat@4.6.3:
     resolution: {integrity: sha512-2P0p0pFGzHS5EMnhdxQi7aJN+iMheud0UhG4dlE1DLAlvL8JHjJJTX/CSm4JXwV0Ka5nGk3zC5mcb5bUQUxxMA==}
 
   dayjs@1.11.18:
     resolution: {integrity: sha512-zFBQ7WFRvVRhKcWoUh+ZA1g2HVgUbsZm9sbddh8EC5iv93sui8DVVz1Npvz+r6meo9VKfa8NyLWBsQK1VvIKPA==}
->>>>>>> b41ea1c689d2bb8d829689d413cba67e9d723728
 
   debug@4.4.1:
     resolution: {integrity: sha512-KcKCqiftBJcZr++7ykoDIEwSa3XWowTfNPo92BYxjXiyYEVrUQh2aLyhxBCwww+heortUFxEJYcRzosstTEBYQ==}
@@ -1894,10 +1851,6 @@ packages:
 
   dotenv@16.4.7:
     resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
-    engines: {node: '>=12'}
-
-  dotenv@17.2.2:
-    resolution: {integrity: sha512-Sf2LSQP+bOlhKWWyhFsn0UsfdK/kCWRv1iuA2gXAwt3dyNabr6QSj00I2V10pidqz69soatm9ZwZvpQMTIOd5Q==}
     engines: {node: '>=12'}
 
   dunder-proto@1.0.1:
@@ -2873,13 +2826,8 @@ packages:
   mongodb-connection-string-url@3.0.2:
     resolution: {integrity: sha512-rMO7CGo/9BFwyZABcKAWL8UJwH/Kc2x0g72uhDWzG48URRax5TCIcJ7Rc3RZqffZzO/Gwff/jyKwCU9TN8gehA==}
 
-<<<<<<< HEAD
   mongodb@6.20.0:
     resolution: {integrity: sha512-Tl6MEIU3K4Rq3TSHd+sZQqRBoGlFsOgNrH5ltAcFBV62Re3Fd+FcaVf8uSEQFOJ51SDowDVttBTONMfoYWrWlQ==}
-=======
-  mongodb@6.19.0:
-    resolution: {integrity: sha512-H3GtYujOJdeKIMLKBT9PwlDhGrQfplABNF1G904w6r5ZXKWyv77aB0X9B+rhmaAwjtllHzaEkvi9mkGVZxs2Bw==}
->>>>>>> b41ea1c689d2bb8d829689d413cba67e9d723728
     engines: {node: '>=16.20.1'}
     peerDependencies:
       '@aws-sdk/credential-providers': ^3.188.0
@@ -3749,13 +3697,10 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
-<<<<<<< HEAD
-=======
   utils-merge@1.0.1:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
 
->>>>>>> b41ea1c689d2bb8d829689d413cba67e9d723728
   uuid@11.1.0:
     resolution: {integrity: sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==}
     hasBin: true
@@ -4834,27 +4779,19 @@ snapshots:
       '@nestjs/microservices': 11.1.6(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(amqp-connection-manager@4.1.14(amqplib@0.10.9))(amqplib@0.10.9)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/platform-express': 11.1.6(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)
 
-<<<<<<< HEAD
-  '@nestjs/typeorm@11.0.0(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.26(mongodb@6.20.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@22.18.1)(typescript@5.9.2)))':
-=======
   '@nestjs/throttler@6.4.0(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(reflect-metadata@0.2.2)':
     dependencies:
       '@nestjs/common': 11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/core': 11.1.6(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/microservices@11.1.6)(@nestjs/platform-express@11.1.6)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       reflect-metadata: 0.2.2
 
-  '@nestjs/typeorm@11.0.0(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.26(mongodb@6.19.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@22.18.1)(typescript@5.9.2)))':
->>>>>>> b41ea1c689d2bb8d829689d413cba67e9d723728
+  '@nestjs/typeorm@11.0.0(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.26(mongodb@6.20.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@22.18.1)(typescript@5.9.2)))':
     dependencies:
       '@nestjs/common': 11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/core': 11.1.6(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/microservices@11.1.6)(@nestjs/platform-express@11.1.6)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       reflect-metadata: 0.2.2
       rxjs: 7.8.2
-<<<<<<< HEAD
       typeorm: 0.3.26(mongodb@6.20.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@22.18.1)(typescript@5.9.2))
-=======
-      typeorm: 0.3.26(mongodb@6.19.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@22.18.1)(typescript@5.9.2))
->>>>>>> b41ea1c689d2bb8d829689d413cba67e9d723728
 
   '@noble/hashes@1.8.0': {}
 
@@ -5369,13 +5306,11 @@ snapshots:
     dependencies:
       amqplib: 0.10.9
       promise-breaker: 6.0.0
-    optional: true
 
   amqplib@0.10.9:
     dependencies:
       buffer-more-ints: 1.0.0
       url-parse: 1.5.10
-    optional: true
 
   ansi-colors@4.1.3: {}
 
@@ -5538,15 +5473,11 @@ snapshots:
 
   bson@6.10.4: {}
 
-<<<<<<< HEAD
-=======
   buffer-equal-constant-time@1.0.1: {}
 
->>>>>>> b41ea1c689d2bb8d829689d413cba67e9d723728
   buffer-from@1.1.2: {}
 
-  buffer-more-ints@1.0.0:
-    optional: true
+  buffer-more-ints@1.0.0: {}
 
   buffer@5.7.1:
     dependencies:
@@ -5757,17 +5688,9 @@ snapshots:
 
   dargs@8.1.0: {}
 
-<<<<<<< HEAD
-  dayjs@1.11.18: {}
-
-  debug@3.2.7:
-    dependencies:
-      ms: 2.1.3
-=======
   dateformat@4.6.3: {}
 
   dayjs@1.11.18: {}
->>>>>>> b41ea1c689d2bb8d829689d413cba67e9d723728
 
   debug@4.4.1:
     dependencies:
@@ -5811,8 +5734,6 @@ snapshots:
       dotenv: 16.4.7
 
   dotenv@16.4.7: {}
-
-  dotenv@17.2.2: {}
 
   dunder-proto@1.0.1:
     dependencies:
@@ -6974,11 +6895,7 @@ snapshots:
       '@types/whatwg-url': 11.0.5
       whatwg-url: 14.2.0
 
-<<<<<<< HEAD
   mongodb@6.20.0:
-=======
-  mongodb@6.19.0:
->>>>>>> b41ea1c689d2bb8d829689d413cba67e9d723728
     dependencies:
       '@mongodb-js/saslprep': 1.3.0
       bson: 6.10.4
@@ -7223,8 +7140,7 @@ snapshots:
 
   process-warning@5.0.0: {}
 
-  promise-breaker@6.0.0:
-    optional: true
+  promise-breaker@6.0.0: {}
 
   proxy-addr@2.0.7:
     dependencies:
@@ -7244,8 +7160,7 @@ snapshots:
     dependencies:
       side-channel: 1.1.0
 
-  querystringify@2.2.0:
-    optional: true
+  querystringify@2.2.0: {}
 
   queue-microtask@1.2.3: {}
 
@@ -7284,8 +7199,7 @@ snapshots:
 
   require-from-string@2.0.2: {}
 
-  requires-port@1.0.0:
-    optional: true
+  requires-port@1.0.0: {}
 
   resolve-cwd@3.0.0:
     dependencies:
@@ -7709,11 +7623,7 @@ snapshots:
 
   typedarray@0.0.6: {}
 
-<<<<<<< HEAD
   typeorm@0.3.26(mongodb@6.20.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@22.18.1)(typescript@5.9.2)):
-=======
-  typeorm@0.3.26(mongodb@6.19.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@22.18.1)(typescript@5.9.2)):
->>>>>>> b41ea1c689d2bb8d829689d413cba67e9d723728
     dependencies:
       '@sqltools/formatter': 1.2.5
       ansis: 3.17.0
@@ -7731,11 +7641,7 @@ snapshots:
       uuid: 11.1.0
       yargs: 17.7.2
     optionalDependencies:
-<<<<<<< HEAD
       mongodb: 6.20.0
-=======
-      mongodb: 6.19.0
->>>>>>> b41ea1c689d2bb8d829689d413cba67e9d723728
       ts-node: 10.9.2(@types/node@22.18.1)(typescript@5.9.2)
     transitivePeerDependencies:
       - babel-plugin-macros
@@ -7811,15 +7717,11 @@ snapshots:
     dependencies:
       querystringify: 2.2.0
       requires-port: 1.0.0
-    optional: true
 
   util-deprecate@1.0.2: {}
 
-<<<<<<< HEAD
-=======
   utils-merge@1.0.1: {}
 
->>>>>>> b41ea1c689d2bb8d829689d413cba67e9d723728
   uuid@11.1.0: {}
 
   v8-compile-cache-lib@3.0.1: {}

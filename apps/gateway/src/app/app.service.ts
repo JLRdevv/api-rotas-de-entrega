@@ -1,11 +1,4 @@
 import { Injectable } from '@nestjs/common';
-<<<<<<< HEAD
-
-@Injectable()
-export class AppService {
-    health() {
-        return 'Ok';
-=======
 import { AuthClient } from '../auth/auth.client';
 import { PointClient } from '../points/point.client';
 import { RouteClient } from '../routes/route.client';
@@ -42,6 +35,5 @@ export class AppService {
                 routes_service: routesService ? 'Up' : 'Down',
             },
         };
->>>>>>> b41ea1c689d2bb8d829689d413cba67e9d723728
     }
 }

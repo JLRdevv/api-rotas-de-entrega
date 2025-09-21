@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { Transport } from '@nestjs/microservices';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { PointsModule } from './points.module';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
@@ -8,12 +8,12 @@ async function bootstrap() {
     const app = await NestFactory.create(PointsModule);
     const configService = app.get(ConfigService);
     app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-    app.connectMicroservice({
+    app.connectMicroservice<MicroserviceOptions>({
         transport: Transport.RMQ,
         options: {
-            urls: [configService.get('RMQ_URL')],
+            urls: [configService.getOrThrow<string>('RMQ_URL')],
             queue: 'points_queue',
-            queueOptions: { durable: false },
+            queueOptions: { durable: true },
         },
     });
 

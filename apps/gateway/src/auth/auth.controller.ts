@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { Controller, Post, Body, Session } from '@nestjs/common';
-=======
 import { Controller, Post, Body, Res } from '@nestjs/common';
->>>>>>> b41ea1c689d2bb8d829689d413cba67e9d723728
 import { AuthService } from './auth.service';
 import { userDataDto } from './dtos/user-data.dto';
 import { type Response } from 'express';
