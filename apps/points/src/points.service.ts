@@ -44,7 +44,10 @@ export class PointService {
             if (!validatePointsUniqueness(points))
                 throw new ConflictException('Points are not unique');
             points = sortIds(points);
-            const result = await this.pointsRepository.save({ userId, points });
+            const result = await this.pointsRepository.save({
+                userId: new ObjectId(userId),
+                points,
+            });
 
             return {
                 _id: result.id.toString(),
@@ -59,7 +62,7 @@ export class PointService {
     async getPoints(data: GetPointsRequest): Promise<GetPointsResponse> {
         try {
             const result = await this.pointsRepository.find({
-                where: { userId: data.userId },
+                where: { userId: new ObjectId(data.userId) },
             });
 
             const response = result.map((point) => ({
@@ -131,7 +134,7 @@ export class PointService {
             });
 
             if (!point) throw new NotFoundException('Points not found');
-            await this.pointsRepository.delete({ id: point.id });
+            await this.pointsRepository.delete({ id: new ObjectId(point.id) });
 
             return { deleted: true };
         } catch (error) {

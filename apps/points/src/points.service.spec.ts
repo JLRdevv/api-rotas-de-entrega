@@ -1,10 +1,21 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { PointService } from './point.service';
+import { PointService } from './points.service';
 import { PointEntity } from './entities/point.entity';
+import { ObjectId } from 'mongodb';
 
 describe('UsersService', () => {
     let service: PointService;
+
+    const fakePointsId = '68add69b7dc255b3b6b03f96';
+    const fakePointsObjectId = new ObjectId(fakePointsId);
+    const fakeUserId = '68add69b7dc255b3b6b03f96';
+    const fakeUserObjectId = new ObjectId(fakeUserId);
+    const points = [
+        { id: 3, x: 1, y: 1 },
+        { id: 2, x: 2, y: 2 },
+        { id: 1, x: 3, y: 3 },
+    ];
 
     let repo: {
         findOne: jest.Mock;
@@ -35,17 +46,10 @@ describe('UsersService', () => {
 
     describe('add', () => {
         it('should persist points if all are unique', async () => {
-            const points = [
-                { id: 3, x: 1, y: 1 },
-                { id: 2, x: 2, y: 2 },
-                { id: 1, x: 3, y: 3 },
-            ];
-            const fakeUserId = '68add69b7dc255b3b6b03f96';
-
             const saveResult = {
-                id: { toString: () => 'objectId' },
+                id: fakePointsObjectId,
                 points,
-                userId: fakeUserId,
+                userId: fakeUserObjectId,
             };
 
             repo.save.mockResolvedValue(saveResult);
@@ -56,36 +60,30 @@ describe('UsersService', () => {
             });
 
             expect(result).toEqual({
-                _id: 'objectId',
+                _id: fakePointsId,
                 points,
             });
             expect(repo.save).toHaveBeenCalledWith({
-                userId: fakeUserId,
+                userId: fakeUserObjectId,
                 points,
             });
         });
 
         it('should throw if points are not unique', async () => {
-            const points = [
-                { id: 1, x: 1, y: 1 },
+            const duplicatedPoints = [
                 { id: 1, x: 2, y: 2 },
-                { id: 1, x: 3, y: 3 },
+                { id: 2, x: 2, y: 2 },
             ];
-            const fakeUserId = '68add69b7dc255b3b6b03f96';
 
             await expect(
-                service.addPoints({ userId: fakeUserId, points }),
+                service.addPoints({
+                    userId: fakeUserId,
+                    points: duplicatedPoints,
+                }),
             ).rejects.toThrow('Points are not unique');
         });
 
         it('should throw InternalServerErrorException if db fails', async () => {
-            const points = [
-                { id: 1, x: 1, y: 1 },
-                { id: 2, x: 2, y: 2 },
-                { id: 3, x: 3, y: 3 },
-            ];
-            const fakeUserId = '68add69b7dc255b3b6b03f96';
-
             repo.save.mockRejectedValue(new Error('DB error'));
 
             await expect(
@@ -93,7 +91,7 @@ describe('UsersService', () => {
             ).rejects.toThrow('Failed to reach database');
 
             expect(repo.save).toHaveBeenCalledWith({
-                userId: fakeUserId,
+                userId: fakeUserObjectId,
                 points,
             });
         });
@@ -101,16 +99,10 @@ describe('UsersService', () => {
 
     describe('getPoints', () => {
         it('should return all points for a specific user', async () => {
-            const fakeUserId = '68add69b7dc255b3b6b03f96';
-            const points = [
-                { id: 1, x: 1, y: 1 },
-                { id: 2, x: 2, y: 2 },
-                { id: 3, x: 3, y: 3 },
-            ];
             const repoResult = [
                 {
-                    id: 'objectId',
-                    userId: fakeUserId,
+                    id: fakePointsObjectId,
+                    userId: fakeUserObjectId,
                     points,
                 },
             ];
@@ -120,12 +112,12 @@ describe('UsersService', () => {
             const result = await service.getPoints({ userId: fakeUserId });
 
             expect(repo.find).toHaveBeenCalledWith({
-                where: { userId: fakeUserId },
+                where: { userId: fakeUserObjectId },
             });
             expect(result).toEqual({
                 userPoints: [
                     {
-                        _id: 'objectId',
+                        _id: fakePointsId,
                         points,
                     },
                 ],
@@ -133,21 +125,17 @@ describe('UsersService', () => {
         });
 
         it('should return empty array if no points are found for the user', async () => {
-            const fakeUserId = '68add69b7dc255b3b6b03f96';
-
             repo.find.mockResolvedValue([]);
 
             const result = await service.getPoints({ userId: fakeUserId });
 
             expect(repo.find).toHaveBeenCalledWith({
-                where: { userId: fakeUserId },
+                where: { userId: fakeUserObjectId },
             });
             expect(result).toEqual({ userPoints: [] });
         });
 
         it('should throw InternalServerErrorException if db fails', async () => {
-            const fakeUserId = '68add69b7dc255b3b6b03f96';
-
             repo.find.mockRejectedValue(new Error('DB error'));
 
             await expect(
@@ -155,21 +143,19 @@ describe('UsersService', () => {
             ).rejects.toThrow('Failed to reach database');
 
             expect(repo.find).toHaveBeenCalledWith({
-                where: { userId: fakeUserId },
+                where: { userId: fakeUserObjectId },
             });
         });
     });
 
     describe('getPoint', () => {
         it('should return a point by id', async () => {
-            const fakePointId = '68add69b7dc255b3b6b03f96';
-            const fakeUserId = '68add69b7dc255b3b6b03f97';
             const points = [
                 { id: 1, x: 1, y: 1 },
                 { id: 2, x: 2, y: 2 },
             ];
             const repoResult = {
-                id: fakePointId,
+                id: fakePointsObjectId,
                 points,
             };
 
@@ -177,68 +163,60 @@ describe('UsersService', () => {
 
             const result = await service.getPoint({
                 userId: fakeUserId,
-                pointId: fakePointId,
+                pointId: fakePointsId,
             });
 
             expect(repo.findOne).toHaveBeenCalledWith({
-                where: { _id: fakePointId },
+                where: { _id: fakePointsObjectId },
             });
             expect(result).toEqual({
                 point: {
-                    _id: fakePointId,
+                    _id: fakePointsId,
                     points,
                 },
             });
         });
 
         it('should throw NotFoundException if point not found', async () => {
-            const fakePointId = '68add69b7dc255b3b6b03f96';
-            const fakeUserId = '68add69b7dc255b3b6b03f96';
-
             repo.findOne.mockResolvedValue(null);
 
             await expect(
                 service.getPoint({
                     userId: fakeUserId,
-                    pointId: fakePointId,
+                    pointId: fakePointsId,
                 }),
-            ).rejects.toThrow(`Point not found with id ${fakePointId}`);
+            ).rejects.toThrow(`Point not found with id ${fakePointsId}`);
 
             expect(repo.findOne).toHaveBeenCalledWith({
-                where: { _id: fakePointId },
+                where: { _id: fakePointsObjectId },
             });
         });
 
         it('should throw InternalServerErrorException if db fails', async () => {
-            const fakePointId = '68add69b7dc255b3b6b03f96';
-            const fakeUserId = '68add69b7dc255b3b6b03f96';
-
             repo.findOne.mockRejectedValue(new Error('DB error'));
 
             await expect(
                 service.getPoint({
                     userId: fakeUserId,
-                    pointId: fakePointId,
+                    pointId: fakePointsId,
                 }),
             ).rejects.toThrow('Failed to reach database');
 
             expect(repo.findOne).toHaveBeenCalledWith({
-                where: { _id: fakePointId },
+                where: { _id: fakePointsObjectId },
             });
         });
     });
 
     describe('patchPoint', () => {
         it('should update points if they are unique', async () => {
-            const fakePointsId = '68add69b7dc255b3b6b03f96';
-            const fakeUserId = '68add69b7dc255b3b6b03f96';
             const bodyPoints = [
                 { id: 1, x: 10, y: 10 },
                 { id: 3, x: 3, y: 3 },
             ];
 
             const dbPoints = {
-                id: fakePointsId,
+                id: fakePointsObjectId,
                 points: [
                     { id: 1, x: 1, y: 1 },
                     { id: 2, x: 2, y: 2 },
@@ -250,7 +228,7 @@ describe('UsersService', () => {
                 { id: 3, x: 3, y: 3 },
             ];
             const savedResult = {
-                id: fakePointsId,
+                id: fakePointsObjectId,
                 points: expectedPointResult,
             };
 
@@ -264,7 +242,7 @@ describe('UsersService', () => {
             });
 
             expect(repo.findOne).toHaveBeenCalledWith({
-                where: { _id: fakePointsId },
+                where: { _id: fakePointsObjectId },
             });
             expect(repo.save).toHaveBeenCalledWith({
                 ...dbPoints,
@@ -277,8 +255,6 @@ describe('UsersService', () => {
         });
 
         it('should throw NotFoundException if no points are found', async () => {
-            const objectId = '68add69b7dc255b3b6b03f96';
-            const fakeUserId = '68add69b7dc255b3b6b03f96';
             const bodyPoints = [];
 
             repo.findOne.mockResolvedValue(null);
@@ -286,22 +262,20 @@ describe('UsersService', () => {
             await expect(
                 service.patchPoint({
                     userId: fakeUserId,
-                    pointsId: objectId,
+                    pointsId: fakePointsId,
                     points: bodyPoints,
                 }),
             ).rejects.toThrow('point not found');
 
             expect(repo.findOne).toHaveBeenCalledWith({
-                where: { _id: objectId },
+                where: { _id: fakePointsObjectId },
             });
         });
 
         it('should throw ConflictException if updated points are not unique', async () => {
-            const objectId = '68add69b7dc255b3b6b03f96';
-            const fakeUserId = '68add69b7dc255b3b6b03f96';
             const bodyPoints = [{ id: 1, x: 1, y: 1 }];
             const dbPoints = {
-                id: objectId,
+                id: fakePointsObjectId,
                 points: [{ id: 2, x: 1, y: 1 }],
             };
 
@@ -310,19 +284,17 @@ describe('UsersService', () => {
             await expect(
                 service.patchPoint({
                     userId: fakeUserId,
-                    pointsId: objectId,
+                    pointsId: fakePointsId,
                     points: bodyPoints,
                 }),
             ).rejects.toThrow('Points are not unique');
 
             expect(repo.findOne).toHaveBeenCalledWith({
-                where: { _id: objectId },
+                where: { _id: fakePointsObjectId },
             });
         });
 
         it('should throw InternalServerErrorException if db fails', async () => {
-            const objectId = '68add69b7dc255b3b6b03f96';
-            const fakeUserId = '68add69b7dc255b3b6b03f97';
             const bodyPoints = [{ id: 1, x: 1, y: 1 }];
 
             repo.findOne.mockRejectedValue(new Error('DB error'));
@@ -330,21 +302,19 @@ describe('UsersService', () => {
             await expect(
                 service.patchPoint({
                     userId: fakeUserId,
-                    pointsId: objectId,
+                    pointsId: fakePointsId,
                     points: bodyPoints,
                 }),
             ).rejects.toThrow('Failed to reach database');
 
             expect(repo.findOne).toHaveBeenCalledWith({
-                where: { _id: objectId },
+                where: { _id: fakePointsObjectId },
             });
         });
     });
 
     describe('deletePoints', () => {
         it('should delete points if pointId exists', async () => {
-            const fakePointsId = '68add69b7dc255b3b6b03f96';
-            const fakeUserId = '68add69b7dc255b3b6b03f97';
             const dbPoint = { id: fakePointsId, points: [] };
 
             repo.findOne.mockResolvedValue(dbPoint);
@@ -356,16 +326,15 @@ describe('UsersService', () => {
             });
 
             expect(repo.findOne).toHaveBeenCalledWith({
-                where: { _id: fakePointsId },
+                where: { _id: fakePointsObjectId },
             });
-            expect(repo.delete).toHaveBeenCalledWith({ id: fakePointsId });
+            expect(repo.delete).toHaveBeenCalledWith({
+                id: fakePointsObjectId,
+            });
             expect(result).toEqual({ deleted: true });
         });
 
         it('should throw NotFoundException if point does not exist', async () => {
-            const fakePointsId = '68add69b7dc255b3b6b03f96';
-            const fakeUserId = '68add69b7dc255b3b6b03f97';
-
             repo.findOne.mockResolvedValue(null);
 
             await expect(
@@ -376,15 +345,12 @@ describe('UsersService', () => {
             ).rejects.toThrow('Points not found');
 
             expect(repo.findOne).toHaveBeenCalledWith({
-                where: { _id: fakePointsId },
+                where: { _id: fakePointsObjectId },
             });
             expect(repo.delete).not.toHaveBeenCalled();
         });
 
         it('should throw InternalServerErrorException if db fails', async () => {
-            const fakePointsId = '68add69b7dc255b3b6b03f96';
-            const fakeUserId = '68add69b7dc255b3b6b03f97';
-
             repo.findOne.mockRejectedValue(new Error('DB error'));
 
             await expect(
@@ -395,26 +361,24 @@ describe('UsersService', () => {
             ).rejects.toThrow('Failed to reach database');
 
             expect(repo.findOne).toHaveBeenCalledWith({
-                where: { _id: fakePointsId },
+                where: { _id: fakePointsObjectId },
             });
         });
     });
 
     describe('deletePoint', () => {
         it('should delete a single point if pointsId and pointId exist', async () => {
-            const fakePointsId = '68add69b7dc255b3b6b03f96';
-            const fakeUserId = '68add69b7dc255b3b6b03f97';
             const pointId = 1;
             const points = [
                 { id: 1, x: 1, y: 1 },
                 { id: 2, x: 2, y: 2 },
             ];
             const dbPoints = {
-                id: fakePointsId,
+                id: fakePointsObjectId,
                 points,
             };
             const expectedResult = {
-                id: fakePointsId,
+                id: fakePointsObjectId,
                 points: [points[1]],
             };
 
@@ -428,7 +392,7 @@ describe('UsersService', () => {
             });
 
             expect(repo.findOne).toHaveBeenCalledWith({
-                where: { _id: fakePointsId },
+                where: { _id: fakePointsObjectId },
             });
             expect(repo.save).toHaveBeenCalledWith(expectedResult);
             expect(result).toEqual({
@@ -438,9 +402,6 @@ describe('UsersService', () => {
         });
 
         it('should throw NotFoundException if points set is not found', async () => {
-            const fakePointsId = '68add69b7dc255b3b6b03f96';
-            const fakeUserId = '68add69b7dc255b3b6b03f97';
-
             repo.findOne.mockResolvedValue(null);
 
             await expect(
@@ -452,14 +413,12 @@ describe('UsersService', () => {
             ).rejects.toThrow('Points not found');
 
             expect(repo.findOne).toHaveBeenCalledWith({
-                where: { _id: fakePointsId },
+                where: { _id: fakePointsObjectId },
             });
         });
 
         it('should throw NotFoundException if points set is empty', async () => {
-            const fakePointsId = '68add69b7dc255b3b6b03f96';
-            const dbPoints = { id: fakePointsId, points: [] };
-            const fakeUserId = '68add69b7dc255b3b6b03f97';
+            const dbPoints = { id: fakePointsObjectId, points: [] };
 
             repo.findOne.mockResolvedValue(dbPoints);
 
@@ -473,10 +432,8 @@ describe('UsersService', () => {
         });
 
         it('should throw NotFoundException if specified point does not exist', async () => {
-            const fakePointsId = '68add69b7dc255b3b6b03f96';
-            const fakeUserId = '68add69b7dc255b3b6b03f97';
             const dbPoints = {
-                id: fakePointsId,
+                id: fakePointsObjectId,
                 points: [{ id: 2, x: 1, y: 1 }],
             };
 
@@ -492,9 +449,6 @@ describe('UsersService', () => {
         });
 
         it('should throw InternalServerErrorException if db fails', async () => {
-            const fakePointsId = '68add69b7dc255b3b6b03f96';
-            const fakeUserId = '68add69b7dc255b3b6b03f97';
-
             repo.findOne.mockRejectedValue(new Error('DB error'));
 
             await expect(

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { PointsController } from './points.controller';
-import { PointService } from './point.service';
+import { PointService } from './points.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PointEntity } from './entities/point.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';

@@ -6,7 +6,7 @@ export class PointEntity {
     @ObjectIdColumn()
     id: ObjectId;
 
-    @Column()
+    @ObjectIdColumn()
     userId: ObjectId;
 
     @Column()

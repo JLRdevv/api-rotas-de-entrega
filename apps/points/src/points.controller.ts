@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { PointService } from './point.service';
+import { PointService } from './points.service';
 import type {
     AddPointsRequest,
     AddPointsResponse,
