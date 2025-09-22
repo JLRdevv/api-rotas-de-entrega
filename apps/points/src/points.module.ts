@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PointsController } from './points.controller';
-import { PointService } from './points.service';
+import { PointsService } from './points.service';
+import { PointsRepository } from './points.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PointEntity } from './entities/point.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -30,7 +31,7 @@ import * as Joi from 'joi';
         TypeOrmModule.forFeature([PointEntity]),
     ],
     controllers: [PointsController],
-    providers: [PointService],
-    exports: [PointService],
+    providers: [PointsRepository, PointsService],
+    exports: [PointsService],
 })
 export class PointsModule {}

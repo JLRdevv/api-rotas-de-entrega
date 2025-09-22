@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { PointService } from './points.service';
+import { PointsService } from './points.service';
 import type {
     AddPointsRequest,
     AddPointsResponse,
@@ -17,42 +17,42 @@ import type {
 
 @Controller()
 export class PointsController {
-    constructor(private readonly pointService: PointService) {}
+    constructor(private readonly pointsService: PointsService) {}
 
     @MessagePattern({ cmd: 'addPoints' })
     addPoints(@Payload() data: AddPointsRequest): Promise<AddPointsResponse> {
-        return this.pointService.addPoints(data);
+        return this.pointsService.addPoints(data);
     }
 
     @MessagePattern({ cmd: 'getPoints' })
     getPoints(@Payload() data: GetPointsRequest): Promise<GetPointsResponse> {
-        return this.pointService.getPoints(data);
+        return this.pointsService.getPoints(data);
     }
 
     @MessagePattern({ cmd: 'getPoint' })
     getPoint(@Payload() data: FindPointRequest): Promise<FindPointResponse> {
-        return this.pointService.getPoint(data);
+        return this.pointsService.getPoint(data);
     }
 
     @MessagePattern({ cmd: 'patchPoints' })
     patchPoints(
         @Payload() data: PatchPointsRequest,
     ): Promise<PatchPointsResponse> {
-        return this.pointService.patchPoint(data);
+        return this.pointsService.patchPoint(data);
     }
 
     @MessagePattern({ cmd: 'deletePoints' })
     deletePoints(
         @Payload() data: FindPointRequest,
     ): Promise<DeletePointsResponse> {
-        return this.pointService.deletePoints(data);
+        return this.pointsService.deletePoints(data);
     }
 
     @MessagePattern({ cmd: 'deletePoint' })
     deletePoint(
         @Payload() data: DeletePointRequest,
     ): Promise<DeletePointResponse> {
-        return this.pointService.deletePoint(data);
+        return this.pointsService.deletePoint(data);
     }
 
     @MessagePattern({ cmd: 'health' })

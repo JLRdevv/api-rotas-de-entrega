@@ -5,9 +5,6 @@ import {
     HttpException,
     InternalServerErrorException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { MongoRepository } from 'typeorm';
-import { PointEntity } from './entities/point.entity';
 import { Point } from './interfaces/point.interface';
 import {
     AddPointsRequest,
@@ -28,13 +25,12 @@ import {
     updatePoints,
 } from './utils/points.util';
 import { ObjectId } from 'mongodb';
+import { PointsRepository } from './points.repository';
+import { PointEntity } from './entities/point.entity';
 
 @Injectable()
-export class PointService {
-    constructor(
-        @InjectRepository(PointEntity)
-        private readonly pointsRepository: MongoRepository<PointEntity>,
-    ) {}
+export class PointsService {
+    constructor(private readonly pointsRepository: PointsRepository) {}
 
     async addPoints({
         userId,
@@ -44,13 +40,15 @@ export class PointService {
             if (!validatePointsUniqueness(points))
                 throw new ConflictException('Points are not unique');
             points = sortIds(points);
-            const result = await this.pointsRepository.save({
-                userId: new ObjectId(userId),
-                points,
-            });
+
+            const newPoints = new PointEntity();
+            newPoints.userId = new ObjectId(userId);
+            newPoints.points = points;
+
+            const result = await this.pointsRepository.create(newPoints);
 
             return {
-                _id: result.id.toString(),
+                _id: result._id.toString(),
                 points: result.points,
             };
         } catch (error) {
@@ -61,12 +59,12 @@ export class PointService {
 
     async getPoints(data: GetPointsRequest): Promise<GetPointsResponse> {
         try {
-            const result = await this.pointsRepository.find({
-                where: { userId: new ObjectId(data.userId) },
-            });
-
+            const result = await this.pointsRepository.findByUser(
+                new ObjectId(data.userId),
+            );
+            console.log(result);
             const response = result.map((point) => ({
-                _id: point.id.toString(),
+                _id: point._id.toString(),
                 points: point.points,
             }));
 
@@ -78,9 +76,9 @@ export class PointService {
 
     async getPoint(data: FindPointRequest): Promise<FindPointResponse> {
         try {
-            const result = await this.pointsRepository.findOne({
-                where: { _id: new ObjectId(data.pointId) },
-            });
+            const result = await this.pointsRepository.findById(
+                new ObjectId(data.pointId),
+            );
 
             if (!result) {
                 throw new NotFoundException(
@@ -90,7 +88,7 @@ export class PointService {
 
             return {
                 point: {
-                    _id: result.id.toString(),
+                    _id: result._id.toString(),
                     points: result.points,
                 },
             };
@@ -102,9 +100,9 @@ export class PointService {
 
     async patchPoint(data: PatchPointsRequest): Promise<PatchPointsResponse> {
         try {
-            const dbPoints = await this.pointsRepository.findOne({
-                where: { _id: new ObjectId(data.pointsId) },
-            });
+            const dbPoints = await this.pointsRepository.findById(
+                new ObjectId(data.pointsId),
+            );
             if (!dbPoints) throw new NotFoundException('point not found');
 
             const newPoints: Point[] = updatePoints(
@@ -115,10 +113,13 @@ export class PointService {
                 throw new ConflictException('Points are not unique');
 
             dbPoints.points = newPoints;
-            const result = await this.pointsRepository.save(dbPoints);
+            const result = await this.pointsRepository.update(
+                dbPoints._id,
+                dbPoints,
+            );
 
             return {
-                pointsId: result.id.toString(),
+                pointsId: result._id.toString(),
                 points: result.points,
             };
         } catch (error) {
@@ -129,12 +130,12 @@ export class PointService {
 
     async deletePoints(data: FindPointRequest): Promise<DeletePointsResponse> {
         try {
-            const point = await this.pointsRepository.findOne({
-                where: { _id: new ObjectId(data.pointId) },
-            });
+            const point = await this.pointsRepository.findById(
+                new ObjectId(data.pointId),
+            );
 
             if (!point) throw new NotFoundException('Points not found');
-            await this.pointsRepository.delete({ id: new ObjectId(point.id) });
+            await this.pointsRepository.delete(point._id);
 
             return { deleted: true };
         } catch (error) {
@@ -145,9 +146,9 @@ export class PointService {
 
     async deletePoint(data: DeletePointRequest): Promise<DeletePointResponse> {
         try {
-            const point = await this.pointsRepository.findOne({
-                where: { _id: new ObjectId(data.pointsId) },
-            });
+            const point = await this.pointsRepository.findById(
+                new ObjectId(data.pointsId),
+            );
 
             if (!point) throw new NotFoundException('Points not found');
 
@@ -162,9 +163,9 @@ export class PointService {
                 throw new NotFoundException('Specified point not found');
 
             point.points = updatedPoints;
-            const result = await this.pointsRepository.save(point);
+            const result = await this.pointsRepository.update(point._id, point);
             return {
-                pointsId: result.id.toString(),
+                pointsId: result._id.toString(),
                 points: result.points,
             };
         } catch (error) {
