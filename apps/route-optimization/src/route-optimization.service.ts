@@ -94,4 +94,41 @@ export class RouteOptimizationService {
 
         return calculatedRoute;
     }
+
+    public async getHistory(userId: string, filters: any) {
+        this.logger.log(`Fetching history for userId: ${userId}`);
+
+        if (!ObjectId.isValid(userId)) {
+            this.logger.warn(`Invalid ID format received: ${userId}`);
+            throw new BadRequestException('Invalid format for userId');
+        }
+
+        
+        const history = await this.pointsServiceClient
+            .send({ cmd: 'getHistory' }, { userId, filters })
+            .toPromise();
+
+        return history;
+    }
+
+    public async deleteRoute(userId: string, routeId: string) {
+        this.logger.log(`Deleting route for userId: ${userId}, routeId: ${routeId}`);
+
+        if (!ObjectId.isValid(userId)) {
+            this.logger.warn(`Invalid ID format received: ${userId}`);
+            throw new BadRequestException('Invalid format for userId');
+        }
+
+        if (!ObjectId.isValid(routeId)) {
+            this.logger.warn(`Invalid ID format received: ${routeId}`);
+            throw new BadRequestException('Invalid format for routeId');
+        }
+
+        
+        const result = await this.pointsServiceClient
+            .send({ cmd: 'deleteRoute' }, { userId, routeId })
+            .toPromise();
+
+        return result;
+    }
 }
