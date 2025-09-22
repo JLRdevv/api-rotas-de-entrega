@@ -15,4 +15,9 @@ export class UsersRepository extends AbstractRepository<User> {
     ) {
         super(repo);
     }
+
+    async findByEmail(email: string) {
+        const users = this.repository.find({ where: { email } });
+        return users[0] ?? null;
+    }
 }
