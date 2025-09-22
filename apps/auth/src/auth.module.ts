@@ -4,6 +4,8 @@ import { AuthService } from './auth.service';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import * as Joi from 'joi';
+import { DatabaseModule } from '@app/common';
+import { User } from './users/user.entity';
 
 @Module({
     imports: [
@@ -16,6 +18,7 @@ import * as Joi from 'joi';
             }),
         }),
         UsersModule,
+        DatabaseModule.forRoot([User]),
     ],
     controllers: [AuthController],
     providers: [AuthService],
