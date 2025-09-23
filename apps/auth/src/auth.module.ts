@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import * as Joi from 'joi';
-import { DatabaseModule } from '@app/common';
-import { User } from './users/user.entity';
+import { LoggerModule } from '@app/common';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
     imports: [
@@ -17,8 +17,28 @@ import { User } from './users/user.entity';
                 JWT_SECRET: Joi.string().required(),
             }),
         }),
+        JwtModule.registerAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: async (configService: ConfigService) => {
+                const secret = configService.getOrThrow('JWT_SECRET');
+                console.log('=== JWT MODULE FACTORY ===');
+                console.log(`JWT_SECRET encontrado: ${!!secret}`);
+                console.log(`JWT_SECRET length: ${secret.length}`);
+                console.log(
+                    `JWT_SECRET preview: ${secret.substring(0, 10)}...`,
+                );
+
+                return {
+                    secret,
+                    signOptions: {
+                        expiresIn: '1h',
+                    },
+                };
+            },
+        }),
+        LoggerModule,
         UsersModule,
-        DatabaseModule.forRoot([User]),
     ],
     controllers: [AuthController],
     providers: [AuthService],

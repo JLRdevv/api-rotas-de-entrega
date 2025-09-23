@@ -7,12 +7,12 @@ import { type AuthRequest } from '@app/contracts';
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
-    @MessagePattern('signup')
+    @MessagePattern({ cmd: 'signup' })
     async signup(@Payload() payload: AuthRequest) {
         return await this.authService.signup(payload.email, payload.password);
     }
 
-    @MessagePattern('login')
+    @MessagePattern({ cmd: 'login' })
     async login(@Payload() payload: AuthRequest) {
         return await this.authService.login(payload.email, payload.password);
     }

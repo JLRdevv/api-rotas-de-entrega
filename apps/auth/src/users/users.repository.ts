@@ -4,6 +4,7 @@ import { MongoRepository } from 'typeorm';
 import { User } from './user.entity';
 import { AbstractRepository } from '@app/common';
 import { Logger } from '@nestjs/common';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class UsersRepository extends AbstractRepository<User> {
@@ -17,7 +18,14 @@ export class UsersRepository extends AbstractRepository<User> {
     }
 
     async findByEmail(email: string) {
-        const users = await this.repository.find({ where: { email } });
-        return users[0] ?? null;
+        try {
+            const users = await this.repository.find({ where: { email } });
+            return users[0] ?? null;
+        } catch (error) {
+            throw new RpcException({
+                statusCode: 500,
+                message: 'Failed to reach database',
+            });
+        }
     }
 }

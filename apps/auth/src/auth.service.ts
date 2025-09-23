@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UsersService } from './users/users.service';
 import { JwtService } from '@nestjs/jwt';
 
@@ -12,22 +12,27 @@ export class AuthService {
     async signup(email: string, password: string) {
         try {
             const userId = await this.usersService.signup(email, password);
-            return this.jwtService.sign({ _id: userId });
-        } catch {
-            throw new InternalServerErrorException(
-                'Error while creating jwt token',
-            );
+
+            const payload = { _id: userId.toString() };
+            const token = this.jwtService.sign(payload);
+
+            return token;
+        } catch (error) {
+            throw error;
         }
     }
 
     async login(email: string, password: string) {
         try {
             const userId = await this.usersService.login(email, password);
-            return this.jwtService.sign({ _id: userId });
-        } catch {
-            throw new InternalServerErrorException(
-                'Error while creating jwt token',
-            );
+
+            const payload = { _id: userId.toString() };
+
+            const token = this.jwtService.sign(payload);
+
+            return token;
+        } catch (error) {
+            throw error;
         }
     }
 }

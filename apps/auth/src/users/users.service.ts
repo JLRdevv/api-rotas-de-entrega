@@ -1,13 +1,10 @@
 import {
-    ConflictException,
-    HttpException,
     Injectable,
-    InternalServerErrorException,
-    UnauthorizedException,
+    Logger,
 } from '@nestjs/common';
+import { RpcException } from '@nestjs/microservices';
 import { UsersRepository } from './users.repository';
 import { hashPassword, verifyPassword } from './helpers/password.utils';
-import { JwtService } from '@nestjs/jwt';
 import { User } from './user.entity';
 
 @Injectable()
@@ -18,7 +15,10 @@ export class UsersService {
         try {
             const isEmailInUse = await this.usersRepository.findByEmail(email);
             if (isEmailInUse) {
-                throw new ConflictException('Email already in use');
+                throw new RpcException({
+                    statusCode: 409,
+                    message: 'Email already in use',
+                });
             }
             const hashedPW = await hashPassword(password);
 
@@ -30,8 +30,11 @@ export class UsersService {
             const user = await this.usersRepository.create(userEntity);
             return user._id;
         } catch (error) {
-            if (error instanceof HttpException) throw error;
-            throw new InternalServerErrorException('Failed to reach database');
+            if (error instanceof RpcException) throw error;
+            throw new RpcException({
+                statusCode: 500,
+                message: 'Failed to reach database',
+            });
         }
     }
 
@@ -39,15 +42,23 @@ export class UsersService {
         try {
             const user = await this.usersRepository.findByEmail(email);
             if (!user) {
-                throw new UnauthorizedException('Wrong email or password');
+                throw new RpcException({
+                    statusCode: 401,
+                    message: 'Wrong email or password',
+                });
             }
             if (!(await verifyPassword(password, user.password)))
-                throw new UnauthorizedException('Wrong email or password');
-
+                throw new RpcException({
+                    statusCode: 401,
+                    message: 'Wrong email or password',
+                });
             return user._id;
         } catch (error) {
-            if (error instanceof HttpException) throw error;
-            throw new InternalServerErrorException('Failed to reach database');
+            if (error instanceof RpcException) throw error;
+            throw new RpcException({
+                statusCode: 500,
+                message: 'Failed to reach database',
+            });
         }
     }
 }
