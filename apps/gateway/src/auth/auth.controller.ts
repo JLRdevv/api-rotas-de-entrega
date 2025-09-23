@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Res } from '@nestjs/common';
+import { Controller, Post, Body, Res, Logger } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { userDataDto } from './dtos/user-data.dto';
 import { type Response } from 'express';
@@ -17,7 +17,7 @@ export class AuthController {
             res.cookie('Authentication', token, {
                 httpOnly: true,
             });
-            return token;
+            return { token };
         }
     }
 
@@ -31,7 +31,7 @@ export class AuthController {
             res.cookie('Authentication', token, {
                 httpOnly: true,
             });
-            return token;
+            return { token };
         }
     }
 

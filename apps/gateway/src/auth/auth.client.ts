@@ -3,7 +3,7 @@ import {
     Transport,
     ClientProxy,
 } from '@nestjs/microservices';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { firstValueFrom, timeout } from 'rxjs';
 import { AuthRequest, AuthResponse } from '@app/contracts';
@@ -11,8 +11,8 @@ import { handleRpcError } from '../helpers/rpc-error.util';
 
 @Injectable()
 export class AuthClient {
+    private readonly logger = new Logger(AuthClient.name);
     private client: ClientProxy;
-
     constructor(private configService: ConfigService) {
         this.client = ClientProxyFactory.create({
             transport: Transport.RMQ,
