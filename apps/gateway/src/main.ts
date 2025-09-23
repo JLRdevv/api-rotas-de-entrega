@@ -6,6 +6,8 @@ import { Logger } from 'nestjs-pino';
 
 async function bootstrap() {
     const app = await NestFactory.create(GatewayModule);
+    const cookieParser = require('cookie-parser');
+    app.use(cookieParser());
     app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
     app.useLogger(app.get(Logger));
     const configService = app.get(ConfigService);
