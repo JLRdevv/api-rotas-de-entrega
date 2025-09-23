@@ -19,11 +19,16 @@ export class AuthController {
 
     @MessagePattern({ cmd: 'whoami' })
     async whoami(@Payload() payload: { userId: string }) {
-        return await this.authService.whoami(payload.userId)
+        return await this.authService.whoami(payload.userId);
     }
 
     @MessagePattern({ cmd: 'health' })
     health() {
         return 'up';
+    }
+
+    @Get('/health')
+    healthHttp() {
+        return { status: 'up' };
     }
 }
