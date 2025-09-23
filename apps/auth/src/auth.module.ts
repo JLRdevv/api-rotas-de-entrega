@@ -13,7 +13,7 @@ import { JwtModule } from '@nestjs/jwt';
             isGlobal: true,
             validationSchema: Joi.object({
                 RMQ_URL: Joi.string().required(),
-                AUTH_HTTP_PORT: Joi.number().required(),
+                HTTP_PORT: Joi.number().required(),
                 JWT_SECRET: Joi.string().required(),
             }),
         }),
