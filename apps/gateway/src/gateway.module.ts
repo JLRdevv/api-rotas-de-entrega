@@ -29,7 +29,7 @@ import * as Joi from 'joi';
         AuthModule,
         PointsModule,
         RoutesModule,
-        AppModule,
+        AppModule
     ],
 })
 export class GatewayModule {}
