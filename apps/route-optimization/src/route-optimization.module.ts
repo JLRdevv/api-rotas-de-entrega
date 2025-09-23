@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { RouteOptimizationController } from './route-optimization.controller';
 import { RouteOptimizationService } from './route-optimization.service';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { LoggerModule } from '@app/common';
 import * as Joi from 'joi';
+import { RouteClient } from './route.client';
 
 @Module({
     imports: [
@@ -15,25 +15,8 @@ import * as Joi from 'joi';
             }),
         }),
         LoggerModule,
-        ClientsModule.registerAsync([
-            {
-                name: 'POINTS_SERVICE',
-                imports: [ConfigModule],
-                inject: [ConfigService],
-                useFactory: (configService: ConfigService) => ({
-                    transport: Transport.RMQ,
-                    options: {
-                        urls: [configService.getOrThrow<string>('RMQ_URL')],
-                        queue: 'point-queue',
-                        queueOptions: {
-                            durable: true,
-                        },
-                    },
-                }),
-            },
-        ]),
     ],
     controllers: [RouteOptimizationController],
-    providers: [RouteOptimizationService],
+    providers: [RouteOptimizationService, RouteClient],
 })
 export class RouteOptimizationModule {}
