@@ -28,20 +28,4 @@ export class PointService {
         }
         return point;
     }
-
-    async getHistory(userId: string, filters: any): Promise<any> {
-        const history = await this.pointsServiceClient
-            .send({ cmd: 'getHistory' }, { userId, filters })
-            .toPromise();
-
-        return history;
-    }
-
-    async deleteRoute(userId: string, routeId: string): Promise<any> {
-        const result = await this.pointsServiceClient
-            .send({ cmd: 'deleteRoute' }, { userId, routeId })
-            .toPromise();
-
-        return result;
-    }
 }

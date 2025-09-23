@@ -16,14 +16,4 @@ export class PointsController {
     async getPointsById(@Payload('id') id: string) {
         return this.pointsService.findById(id);
     }
-
-     @MessagePattern({ cmd: 'getHistory' })
-    async getHistory(@Payload() data: { userId: string; filters?: any }) {
-        return this.pointsService.getHistory(data.userId, data.filters);
-    }
-
-    @MessagePattern({ cmd: 'deleteRoute' })
-    async deleteRoute(@Payload() data: { userId: string; routeId: string }) {
-        return this.pointsService.deleteRoute(data.userId, data.routeId);
-    }
 }
