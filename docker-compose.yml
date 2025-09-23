@@ -4,23 +4,23 @@ services:
     container_name: mongo
     restart: unless-stopped
     ports:
-      - "27017:27017"
+      - '27017:27017'
     env_file:
-      - config/mongo.env   
+      - config/mongo.env
     volumes:
-      - mongo_data:/data/db 
+      - mongo_data:/data/db
 
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
     restart: unless-stopped
     ports:
-      - "5672:5672"
-      - "15672:15672"
+        - '5672:5672'
+        - '15672:15672'
     env_file:
-      - config/rmq.env
+        - config/rmq.env
     volumes:
-      - rabbit_data:/var/lib/rabbitmq
+        - rabbit_data:/var/lib/rabbitmq
 
   gateway:
     container_name: gateway
@@ -36,6 +36,7 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
+
   points:
     build:
       context: .
@@ -52,6 +53,23 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
+
+  route-optimization:
+    build:
+      context: .
+      dockerfile: ./apps/route-optimization/Dockerfile
+      target: development
+    command: pnpm run start:dev route-optimization
+    env_file:
+      - ./apps/route-optimization/.env
+    ports:
+      - '3002:3002'
+    depends_on:
+      - rabbitmq
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+      
 volumes:
-  mongo_data:
-  rabbit_data:
+    mongo_data:
+    rabbit_data:

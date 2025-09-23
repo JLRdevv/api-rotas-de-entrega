@@ -13,6 +13,7 @@ export interface Route {
 export interface AddRouteRequest {
     userId: string;
     pointsId: string;
+    pointId?: number;
 }
 
 // create route with starting point
@@ -54,3 +55,16 @@ export interface DeleteRouteRequest {
 export interface DeleteRouteResponse {
     deleted: boolean;
 }
+
+// single point
+export interface SinglePoint {
+    id: number;
+    x: number;
+    y: number;
+}
+
+// optimized route
+export type OptimizedRouteResult = {
+    optimizedRoute: (number | string)[];
+    totalDistance: number;
+};
