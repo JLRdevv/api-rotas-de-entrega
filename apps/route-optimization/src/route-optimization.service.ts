@@ -86,11 +86,14 @@ export class RouteOptimizationService {
 
         // Emitting the calculated route
         this.logger.log("Emitting 'route_calculated' event to points-service.");
-        this.pointsServiceClient.emit('route_calculated', {
-            userId,
-            pointsId,
-            calculatedRoute,
-        });
+        this.pointsServiceClient.emit(
+            { cmd: 'addRoute' },
+            {
+                userId,
+                pointsId,
+                calculatedRoute,
+            },
+        );
 
         return calculatedRoute;
     }

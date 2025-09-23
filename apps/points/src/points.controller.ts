@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { PointsService } from './points.service';
 import type {
     AddPointsRequest,
@@ -65,13 +65,8 @@ export class PointsController {
         return true;
     }
 
-    @MessagePattern({ cmd: 'create-point' })
+    @EventPattern({ cmd: 'addRoute' })
     async createPoint(@Payload() createPointDto: CreatePointDto) {
         return this.pointsService.create(createPointDto);
-    }
-
-    @MessagePattern({ cmd: 'get-points-by-id' })
-    async getPointsById(@Payload('id') id: string) {
-        return this.pointsService.findById(id);
     }
 }

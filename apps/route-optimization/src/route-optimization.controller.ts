@@ -2,6 +2,7 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { RouteOptimizationService } from './route-optimization.service';
 import type { AddRouteRequest } from '@app/contracts';
+import { Get } from '@nestjs/common';
 
 @Controller()
 export class RouteOptimizationController {
@@ -15,6 +16,11 @@ export class RouteOptimizationController {
 
     @MessagePattern({ cmd: 'health' })
     healthCheck(): boolean {
+        return true;
+    }
+
+    @Get('health')
+    healthHTTP(): boolean {
         return true;
     }
 }
