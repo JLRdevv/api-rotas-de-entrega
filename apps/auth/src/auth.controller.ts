@@ -16,4 +16,14 @@ export class AuthController {
     async login(@Payload() payload: AuthRequest) {
         return await this.authService.login(payload.email, payload.password);
     }
+
+    @MessagePattern({ cmd: 'whoami' })
+    async whoami(@Payload() payload: { userId: string }) {
+        return await this.authService.whoami(payload.userId)
+    }
+
+    @MessagePattern({ cmd: 'health' })
+    health() {
+        return 'up';
+    }
 }

@@ -35,4 +35,14 @@ export class AuthService {
             throw error;
         }
     }
+
+    async whoami(userId: string) {
+        try {
+            return await this.usersService.whoami(userId);
+
+            
+        } catch (error) {
+            throw error;
+        }
+    }
 }

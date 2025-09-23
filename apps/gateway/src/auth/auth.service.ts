@@ -12,4 +12,8 @@ export class AuthService {
     async login(email: string, password: string) {
         return await this.authClient.login(email, password);
     }
+
+    async whoami(userId: string) {
+        return await this.authClient.whoami(userId);
+    }
 }

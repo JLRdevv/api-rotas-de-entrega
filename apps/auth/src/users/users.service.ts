@@ -1,11 +1,9 @@
-import {
-    Injectable,
-    Logger,
-} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { UsersRepository } from './users.repository';
 import { hashPassword, verifyPassword } from './helpers/password.utils';
 import { User } from './user.entity';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class UsersService {
@@ -53,6 +51,31 @@ export class UsersService {
                     message: 'Wrong email or password',
                 });
             return user._id;
+        } catch (error) {
+            if (error instanceof RpcException) throw error;
+            throw new RpcException({
+                statusCode: 500,
+                message: 'Failed to reach database',
+            });
+        }
+    }
+
+    async whoami(userId: string) {
+        try {
+            const user = await this.usersRepository.findById(
+                new ObjectId(userId),
+            );
+            if (!user) {
+                throw new RpcException({
+                    statusCode: 401,
+                    message: 'User does not exist',
+                });
+            }
+            
+            return {
+                _id: user._id,
+                email: user.email,
+            };
         } catch (error) {
             if (error instanceof RpcException) throw error;
             throw new RpcException({

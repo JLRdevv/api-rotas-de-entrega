@@ -21,19 +21,8 @@ import { JwtModule } from '@nestjs/jwt';
             imports: [ConfigModule],
             inject: [ConfigService],
             useFactory: async (configService: ConfigService) => {
-                const secret = configService.getOrThrow('JWT_SECRET');
-                console.log('=== JWT MODULE FACTORY ===');
-                console.log(`JWT_SECRET encontrado: ${!!secret}`);
-                console.log(`JWT_SECRET length: ${secret.length}`);
-                console.log(
-                    `JWT_SECRET preview: ${secret.substring(0, 10)}...`,
-                );
-
                 return {
-                    secret,
-                    signOptions: {
-                        expiresIn: '1h',
-                    },
+                    secret: configService.getOrThrow('JWT_SECRET'),
                 };
             },
         }),

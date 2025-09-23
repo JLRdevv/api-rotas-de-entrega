@@ -1,7 +1,9 @@
-import { Controller, Post, Body, Res, Logger } from '@nestjs/common';
+import { Controller, Post, Body, Res, Get, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { userDataDto } from './dtos/user-data.dto';
 import { type Response } from 'express';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { UserId } from './decorators/current-user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -41,5 +43,11 @@ export class AuthController {
             httpOnly: true,
         });
         return true;
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('/whoami')
+    async whoami(@UserId() userId: string) {
+        return await this.authService.whoami(userId)
     }
 }
