@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      containers:
+        - name: auth
+          image: auth:latest
+          command: ["node", "dist/apps/auth/main"]
+          ports:
+            - containerPort: 3001
+          envFrom:
+            - secretRef:
+                name: auth-env
+      initContainers:
+        - name: ESPERA UM POUCO
+          image: busybox:1.36
+          command: ['sh', '-c', 'until nc -z rabbitmq 5672 && nc -z mongo 27017; do echo waiting for deps; sleep 2; done;']
