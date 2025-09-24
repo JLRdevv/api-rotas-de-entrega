@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: auth
-          image: auth:latest
+          image: jldevv/desafio4:auth
           command: ["node", "dist/apps/auth/main"]
           ports:
             - containerPort: 3001

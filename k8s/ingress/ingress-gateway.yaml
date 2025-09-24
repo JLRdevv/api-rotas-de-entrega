@@ -1,17 +1,23 @@
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
   name: gateway-ingress
   namespace: default
+  annotations:
+    kubernetes.io/ingress.class: traefik
 spec:
-  entryPoints:
-    - web
-    - websecure
-  routes:
-    - match: Host(`route-api.ddns.net`)
-      kind: Rule
-      services:
-        - name: gateway
-          port: 3000
+  rules:
+    - host: route-api.ddns.net
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gateway
+                port:
+                  number: 3000
   tls:
-    certResolver: letsencrypt
+    - hosts:
+        - route-api.ddns.net
+      secretName: gateway-cert
