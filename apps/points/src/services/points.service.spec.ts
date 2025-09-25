@@ -86,7 +86,7 @@ describe('UsersService', () => {
             ).rejects.toThrow('Points are not unique');
         });
 
-        it('should throw InternalServerErrorException if db fails', async () => {
+        it('should throw RcpException if db fails', async () => {
             repo.create.mockRejectedValue(new Error('DB error'));
 
             await expect(
@@ -134,7 +134,7 @@ describe('UsersService', () => {
             expect(result).toEqual({ userPoints: [] });
         });
 
-        it('should throw InternalServerErrorException if db fails', async () => {
+        it('should throw RcpException if db fails', async () => {
             repo.findByUser.mockRejectedValue(new Error('DB error'));
 
             await expect(
@@ -185,7 +185,7 @@ describe('UsersService', () => {
             expect(repo.findById).toHaveBeenCalledWith(fakePointsObjectId);
         });
 
-        it('should throw InternalServerErrorException if db fails', async () => {
+        it('should throw RcpException if db fails', async () => {
             repo.findById.mockRejectedValue(new Error('DB error'));
 
             await expect(
@@ -276,7 +276,7 @@ describe('UsersService', () => {
             expect(repo.findById).toHaveBeenCalledWith(fakePointsObjectId);
         });
 
-        it('should throw InternalServerErrorException if db fails', async () => {
+        it('should throw RcpException if db fails', async () => {
             const bodyPoints = [{ id: 1, x: 1, y: 1 }];
 
             repo.findById.mockRejectedValue(new Error('DB error'));
@@ -324,7 +324,7 @@ describe('UsersService', () => {
             expect(repo.delete).not.toHaveBeenCalled();
         });
 
-        it('should throw InternalServerErrorException if db fails', async () => {
+        it('should throw RcpException if db fails', async () => {
             repo.findById.mockRejectedValue(new Error('DB error'));
 
             await expect(
@@ -419,7 +419,7 @@ describe('UsersService', () => {
             ).rejects.toThrow('Specified point not found');
         });
 
-        it('should throw InternalServerErrorException if db fails', async () => {
+        it('should throw RcpException if db fails', async () => {
             repo.findById.mockRejectedValue(new Error('DB error'));
 
             await expect(

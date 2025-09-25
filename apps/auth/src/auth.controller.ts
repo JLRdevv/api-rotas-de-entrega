@@ -29,6 +29,6 @@ export class AuthController {
 
     @Get('/health')
     healthHttp() {
-        return { status: 'up' };
+        return true;
     }
 }

@@ -4,6 +4,7 @@ import { UsersRepository } from './users.repository';
 import { hashPassword, verifyPassword } from './helpers/password.utils';
 import { User } from './user.entity';
 import { ObjectId } from 'mongodb';
+import { Whoami } from '@app/contracts';
 
 @Injectable()
 export class UsersService {
@@ -60,7 +61,7 @@ export class UsersService {
         }
     }
 
-    async whoami(userId: string) {
+    async whoami(userId: string): Promise<Whoami> {
         try {
             const user = await this.usersRepository.findById(
                 new ObjectId(userId),
@@ -73,7 +74,7 @@ export class UsersService {
             }
 
             return {
-                _id: user._id,
+                _id: user._id.toString(),
                 email: user.email,
             };
         } catch (error) {

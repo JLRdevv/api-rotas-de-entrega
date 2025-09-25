@@ -48,6 +48,6 @@ export class AuthController {
     @UseGuards(JwtAuthGuard)
     @Get('/whoami')
     async whoami(@UserId() userId: string) {
-        return await this.authService.whoami(userId)
+        return await this.authService.whoami(userId);
     }
 }

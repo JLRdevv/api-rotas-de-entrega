@@ -197,7 +197,9 @@ export class PointsService {
                 });
 
             point.points = updatedPoints;
-            const result = await this.pointsRepository.update(point._id, point);
+            const result = await this.pointsRepository.update(point._id, {
+                points: point.points,
+            });
             return {
                 pointsId: result._id.toString(),
                 points: result.points,
