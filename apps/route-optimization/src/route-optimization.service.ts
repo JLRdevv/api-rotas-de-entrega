@@ -1,9 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ObjectId } from 'mongodb';
 import { RpcException } from '@nestjs/microservices';
+import { ObjectId } from 'mongodb';
 import {
-    type AddRouteRequest,
-    type OptimizedRouteResult,
+    AddRouteRequest,
+    OptimizedRouteResult,
+    HistoryRequest,
+    HistoryResponse,
+    DeleteRouteRequest,
+    DeleteRouteResponse,
 } from '@app/contracts';
 import { optimizeRoute, validateStartingPoint } from '@app/utils';
 import { RouteClient } from './route.client';
@@ -43,7 +47,6 @@ export class RouteOptimizationService {
 
         if (!points || points.length === 0) {
             this.logger.warn(`Points with ID ${pointsId} not found.`);
-
             throw new RpcException({
                 statusCode: 404,
                 message: `Points with ID ${pointsId} not found.`,
@@ -72,21 +75,36 @@ export class RouteOptimizationService {
         }
 
         this.logger.log('Optimizing the route...');
-        const calculatedRoute: OptimizedRouteResult = optimizeRoute(
+        const calculatedRoute = optimizeRoute(
             points,
             pointId || 'not specified',
         );
         this.logger.log('Route optimization finished.');
-        this.logger.log("Emitting 'saveRoute' event to points-service.");
-        this.routeClient.emitRouteCalculated({
+
+        this.logger.log("Sending 'saveHistory' command to points-service.");
+        this.routeClient.saveHistory({
             userId,
             pointsId,
-            optimizedRoute: calculatedRoute.optimizedRoute.map(
-                (point) => +point,
-            ),
+            optimizedRoute: calculatedRoute.optimizedRoute as number[],
             totalDistance: calculatedRoute.totalDistance,
         });
 
         return calculatedRoute;
+    }
+
+    async getHistory(payload: HistoryRequest): Promise<HistoryResponse> {
+        this.logger.log(
+            `Forwarding getHistory request for user: ${payload.userId}`,
+        );
+        return this.routeClient.getHistory(payload);
+    }
+
+    async deleteRoute(
+        payload: DeleteRouteRequest,
+    ): Promise<DeleteRouteResponse> {
+        this.logger.log(
+            `Forwarding deleteRoute request for route: ${payload.routeId}`,
+        );
+        return this.routeClient.deleteRoute(payload);
     }
 }
