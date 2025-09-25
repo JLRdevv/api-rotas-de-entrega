@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PointsService } from './points.service';
-import { PointsRepository } from './points.repository';
+import { PointsRepository } from '../repository/points.repository';
 import { ObjectId } from 'mongodb';
 
 describe('UsersService', () => {

@@ -10,7 +10,6 @@ export class RouteOptimizationController {
 
     @MessagePattern({ cmd: 'addRoute' })
     handleRouteOptimizationRequest(@Payload() data: AddRouteRequest) {
-        console.log(`Message 'addRoute' received with payload:`, data);
         return this.routeOptService.calculateAndOptimizeRoute(data);
     }
 

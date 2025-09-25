@@ -78,20 +78,21 @@ export class RouteOptimizationService {
 
         // Optimizing the route
         this.logger.log('Optimizing the route...');
-        const calculatedRoute = optimizeRoute(
+        const calculatedRoute: OptimizedRouteResult = optimizeRoute(
             points,
             pointId || 'not specified',
         );
         this.logger.log('Route optimization finished.');
 
         // Emitting the calculated route
-        this.logger.log("Emitting 'route_calculated' event to points-service.");
+        this.logger.log("Emitting 'addRoute' event to points-service.");
         this.pointsServiceClient.emit(
-            { cmd: 'addRoute' },
+            { cmd: 'saveHistory' },
             {
-                userId,
                 pointsId,
-                calculatedRoute,
+                userId,
+                optimizedRoute: calculatedRoute.optimizedRoute,
+                totalDistance: calculatedRoute.totalDistance,
             },
         );
 

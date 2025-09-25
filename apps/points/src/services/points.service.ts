@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Point } from './interfaces/point.interface';
+import { Point } from '../interfaces/point.interface';
 import {
     AddPointsRequest,
     AddPointsResponse,
@@ -17,10 +17,10 @@ import {
     validatePointsUniqueness,
     sortIds,
     updatePoints,
-} from './utils/points.util';
+} from '../utils/points.util';
 import { ObjectId } from 'mongodb';
-import { PointsRepository } from './points.repository';
-import { PointEntity } from './entities/point.entity';
+import { PointsRepository } from '../repository/points.repository';
+import { PointEntity } from '../entities/point.entity';
 import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
@@ -63,7 +63,6 @@ export class PointsService {
             const result = await this.pointsRepository.findByUser(
                 new ObjectId(data.userId),
             );
-            console.log(result);
             const response = result.map((point) => ({
                 _id: point._id.toString(),
                 points: point.points,
@@ -114,7 +113,7 @@ export class PointsService {
             if (!dbPoints)
                 throw new RpcException({
                     status: 404,
-                    message: `Point not found`,
+                    message: `point not found`,
                 });
 
             const newPoints: Point[] = updatePoints(

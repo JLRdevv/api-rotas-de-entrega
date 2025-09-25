@@ -68,3 +68,10 @@ export type OptimizedRouteResult = {
     optimizedRoute: (number | string)[];
     totalDistance: number;
 };
+
+export interface SaveHistory {
+    pointsId: string;
+    userId: string;
+    optimizedRoute: number[];
+    totalDistance: number;
+}

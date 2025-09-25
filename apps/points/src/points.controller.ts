@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
-import { PointsService } from './points.service';
+import { PointsService } from './services/points.service';
 import type {
     AddPointsRequest,
     AddPointsResponse,
@@ -13,11 +13,16 @@ import type {
     DeletePointsResponse,
     DeletePointResponse,
     DeletePointRequest,
+    SaveHistory,
 } from '@app/contracts';
+import { HistoryService } from './services/history.service';
 
 @Controller()
 export class PointsController {
-    constructor(private readonly pointsService: PointsService) {}
+    constructor(
+        private readonly pointsService: PointsService,
+        private readonly historyService: HistoryService,
+    ) {}
 
     @MessagePattern({ cmd: 'addPoints' })
     addPoints(@Payload() data: AddPointsRequest): Promise<AddPointsResponse> {
@@ -65,8 +70,8 @@ export class PointsController {
         return true;
     }
 
-    @EventPattern({ cmd: 'addRoute' })
-    async createPoint(@Payload() createPointDto: CreatePointDto) {
-        return this.pointsService.create(createPointDto);
+    @EventPattern({ cmd: 'saveHistory' })
+    saveHistory(@Payload() route: SaveHistory) {
+        return this.historyService.save(route);
     }
 }

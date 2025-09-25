@@ -1,28 +1,37 @@
-FROM node:alpine As development
+FROM node:alpine AS development
 
 WORKDIR /usr/src/app
 
-COPY package.json pnpm-lock.yaml ./
-COPY tsconfig.json tsconfig.build.json nest-cli.json ./
+COPY package.json ./
+COPY pnpm-lock.yaml ./
+COPY tsconfig.json tsconfig.json
+COPY nest-cli.json nest-cli.json
+
+ENV CI=true
 
 RUN npm install -g pnpm
-RUN pnpm install --frozen-lockfile
+RUN pnpm install
 
 COPY apps/route-optimization apps/route-optimization
 COPY libs libs
 
+RUN cd apps/route-optimization && pnpm install
 RUN pnpm run build route-optimization
 
-FROM node:alpine as production
+FROM node:alpine AS production
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
 
 WORKDIR /usr/src/app
 
-COPY package.json pnpm-lock.yaml ./
+COPY package.json ./
+COPY pnpm-lock.yaml ./
+
+ENV CI=true
+
 RUN npm install -g pnpm
-RUN pnpm install --prod --frozen-lockfile
+RUN pnpm install --prod
 
 COPY --from=development /usr/src/app/dist ./dist
 

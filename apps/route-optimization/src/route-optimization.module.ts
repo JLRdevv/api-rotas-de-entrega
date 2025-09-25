@@ -24,7 +24,7 @@ import * as Joi from 'joi';
                     transport: Transport.RMQ,
                     options: {
                         urls: [configService.getOrThrow<string>('RMQ_URL')],
-                        queue: 'point-queue',
+                        queue: 'points_queue',
                         queueOptions: {
                             durable: true,
                         },
