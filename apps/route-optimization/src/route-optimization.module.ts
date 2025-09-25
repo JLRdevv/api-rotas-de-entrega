@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { RouteOptimizationController } from './route-optimization.controller';
 import { RouteOptimizationService } from './route-optimization.service';
-import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 import { LoggerModule } from '@app/common';
 import * as Joi from 'joi';
+import { RouteClient } from './route.client';
 
 @Module({
     imports: [
@@ -34,6 +35,6 @@ import * as Joi from 'joi';
         ]),
     ],
     controllers: [RouteOptimizationController],
-    providers: [RouteOptimizationService],
+    providers: [RouteOptimizationService, RouteClient],
 })
 export class RouteOptimizationModule {}

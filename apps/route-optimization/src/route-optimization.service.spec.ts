@@ -1,47 +1,54 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Test, TestingModule } from '@nestjs/testing';
+import { RpcException } from '@nestjs/microservices';
 import { RouteOptimizationService } from './route-optimization.service';
-import {
-    BadRequestException,
-    NotFoundException,
-    UnprocessableEntityException,
-} from '@nestjs/common';
+import { RouteClient } from './route.client';
+import * as utils from '@app/utils';
 import type {
     AddRouteRequest,
     FindPointResponse,
     OptimizedRouteResult,
 } from '@app/contracts';
-import * as utils from '@app/utils';
-import { of } from 'rxjs';
 
-jest.mock('@app/utils', () => {
-    const originalModule = jest.requireActual('@app/utils');
-    return {
-        __esModule: true,
-        ...originalModule,
-        optimizeRoute: jest.fn(),
-    };
-});
-
-const mockedOptimizeRoute =
-    utils.optimizeRoute as jest.Mock<OptimizedRouteResult>;
+jest.mock('@app/utils', () => ({
+    optimizeRoute: jest.fn(),
+    validateStartingPoint: jest.fn(),
+}));
 
 describe('RouteOptimizationService', () => {
     let service: RouteOptimizationService;
+    let routeClient: {
+        getPoint: jest.Mock;
+        emitRouteCalculated: jest.Mock;
+    };
 
-    const mockPointsServiceClient = {
-        send: jest.fn(),
-        emit: jest.fn(),
+    const mockAddRouteRequest: AddRouteRequest = {
+        pointsId: '6331c8a1c9320531c3600c28',
+        userId: '6331c8a1c9320531c3600c29',
+        pointId: 1,
+    };
+    const mockFindPointResponse: FindPointResponse = {
+        point: {
+            _id: '6331c8a1c9320531c3600c28',
+            points: [
+                { id: 1, x: 0, y: 0 },
+                { id: 2, x: 50, y: 30 },
+                { id: 3, x: 10, y: 80 },
+            ],
+        },
     };
 
     beforeEach(async () => {
+        const mockRouteClient = {
+            getPoint: jest.fn(),
+            emitRouteCalculated: jest.fn(),
+        };
+
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 RouteOptimizationService,
                 {
-                    provide: 'POINTS_SERVICE',
-                    useValue: mockPointsServiceClient,
+                    provide: RouteClient,
+                    useValue: mockRouteClient,
                 },
             ],
         }).compile();
@@ -49,6 +56,8 @@ describe('RouteOptimizationService', () => {
         service = module.get<RouteOptimizationService>(
             RouteOptimizationService,
         );
+        routeClient = module.get(RouteClient);
+
         jest.clearAllMocks();
     });
 
@@ -57,87 +66,87 @@ describe('RouteOptimizationService', () => {
     });
 
     describe('calculateAndOptimizeRoute', () => {
-        const mockAddRouteRequest: AddRouteRequest = {
-            pointsId: '6331c8a1c9320531c3600c28',
-            userId: '6331c8a1c9320531c3600c29',
-            pointId: 1,
-        };
-        const mockFindPointResponse: FindPointResponse = {
-            point: {
-                _id: '6331c8a1c9320531c3600c28',
-                points: [
-                    { id: 1, x: 0, y: 0 },
-                    { id: 2, x: 50, y: 30 },
-                    { id: 3, x: 10, y: 80 },
-                ],
-            },
-        };
-        const mockCalculatedRoute: OptimizedRouteResult = {
-            optimizedRoute: [1, 3, 2, 1],
-            totalDistance: 188.8,
-        };
+        it('should successfully calculate and emit the optimized route', async () => {
+            const mockCalculatedRoute: OptimizedRouteResult = {
+                optimizedRoute: [1, 3, 2, 1],
+                totalDistance: 188.8,
+            };
 
-        it('should fetch points, calculate route, emit event, and return result', async () => {
-            // Arrange
-            mockPointsServiceClient.send.mockReturnValue(
-                of(mockFindPointResponse),
+            routeClient.getPoint.mockResolvedValue(mockFindPointResponse);
+            (utils.validateStartingPoint as jest.Mock).mockReturnValue(true);
+            (utils.optimizeRoute as jest.Mock).mockReturnValue(
+                mockCalculatedRoute,
             );
-            mockedOptimizeRoute.mockReturnValue(mockCalculatedRoute);
 
-            // Act
             const result =
                 await service.calculateAndOptimizeRoute(mockAddRouteRequest);
 
-            // Assert
-            expect(mockPointsServiceClient.send).toHaveBeenCalledWith(
-                { cmd: 'getPoint' },
-                {
-                    userId: mockAddRouteRequest.userId,
-                    pointId: mockAddRouteRequest.pointsId,
-                },
+            expect(routeClient.getPoint).toHaveBeenCalledWith(
+                mockAddRouteRequest.userId,
+                mockAddRouteRequest.pointsId,
             );
-            expect(mockedOptimizeRoute).toHaveBeenCalledWith(
-                mockFindPointResponse.point.points,
-                mockAddRouteRequest.pointId,
-            );
-            expect(mockPointsServiceClient.emit).toHaveBeenCalledWith(
-                'route_calculated',
-                {
-                    userId: mockAddRouteRequest.userId,
-                    pointsId: mockAddRouteRequest.pointsId,
-                    calculatedRoute: mockCalculatedRoute,
-                },
-            );
+            expect(routeClient.emitRouteCalculated).toHaveBeenCalledWith({
+                userId: mockAddRouteRequest.userId,
+                pointsId: mockAddRouteRequest.pointsId,
+                calculatedRoute: mockCalculatedRoute,
+            });
             expect(result).toEqual(mockCalculatedRoute);
         });
 
-        it('should throw BadRequestException for invalid IDs', async () => {
+        it('should throw RpcException for invalid ObjectId format', async () => {
             const invalidPayload: AddRouteRequest = {
                 pointsId: 'invalid',
                 userId: 'invalid',
             };
+            const expectedError = new RpcException({
+                statusCode: 400,
+                message: 'Invalid format for pointsId or userId',
+            });
+
             await expect(
                 service.calculateAndOptimizeRoute(invalidPayload),
-            ).rejects.toThrow(BadRequestException);
+            ).rejects.toThrow(expectedError);
+            expect(routeClient.getPoint).not.toHaveBeenCalled();
         });
 
-        it('should throw NotFoundException if points-service returns no points', async () => {
-            mockPointsServiceClient.send.mockReturnValue(of(null));
+        it('should throw RpcException if points are not found', async () => {
+            routeClient.getPoint.mockResolvedValue(null);
+            const expectedError = new RpcException({
+                statusCode: 404,
+                message: `Points with ID ${mockAddRouteRequest.pointsId} not found.`,
+            });
+
             await expect(
                 service.calculateAndOptimizeRoute(mockAddRouteRequest),
-            ).rejects.toThrow(NotFoundException);
+            ).rejects.toThrow(expectedError);
         });
 
-        it('should throw UnprocessableEntityException if there are less than 2 points', async () => {
+        it('should throw RpcException if there are less than 2 points', async () => {
             const singlePointResponse: FindPointResponse = {
                 point: { _id: '...', points: [{ id: 1, x: 0, y: 0 }] },
             };
-            mockPointsServiceClient.send.mockReturnValue(
-                of(singlePointResponse),
-            );
+            routeClient.getPoint.mockResolvedValue(singlePointResponse);
+            const expectedError = new RpcException({
+                statusCode: 422,
+                message: 'A route requires at least 2 points to be calculated.',
+            });
+
             await expect(
                 service.calculateAndOptimizeRoute(mockAddRouteRequest),
-            ).rejects.toThrow(UnprocessableEntityException);
+            ).rejects.toThrow(expectedError);
+        });
+
+        it('should throw RpcException if the starting point is not valid', async () => {
+            routeClient.getPoint.mockResolvedValue(mockFindPointResponse);
+            (utils.validateStartingPoint as jest.Mock).mockReturnValue(false);
+            const expectedError = new RpcException({
+                statusCode: 422,
+                message: `The provided start point with id "${mockAddRouteRequest.pointId}" was not found in the list of points.`,
+            });
+
+            await expect(
+                service.calculateAndOptimizeRoute(mockAddRouteRequest),
+            ).rejects.toThrow(expectedError);
         });
     });
 });

@@ -14,6 +14,10 @@ import type {
     DeletePointResponse,
     DeletePointRequest,
     SaveHistory,
+    HistoryRequest,
+    HistoryResponse,
+    DeleteRouteRequest,
+    DeleteRouteResponse,
 } from '@app/contracts';
 import { HistoryService } from './services/history.service';
 
@@ -60,6 +64,23 @@ export class PointsController {
         return this.pointsService.deletePoint(data);
     }
 
+    @EventPattern({ cmd: 'saveHistory' })
+    saveHistory(@Payload() route: SaveHistory) {
+        return this.historyService.save(route);
+    }
+
+    @MessagePattern({ cmd: 'getHistory' })
+    getHistory(@Payload() data: HistoryRequest): Promise<HistoryResponse> {
+        return this.historyService.getHistory(data);
+    }
+
+    @MessagePattern({ cmd: 'deleteRoute' })
+    deleteRoute(
+        @Payload() data: DeleteRouteRequest,
+    ): Promise<DeleteRouteResponse> {
+        return this.historyService.deleteRoute(data);
+    }
+
     @MessagePattern({ cmd: 'health' })
     healthMessage(): boolean {
         return true;
@@ -68,10 +89,5 @@ export class PointsController {
     @Get('health')
     healthHTTP(): boolean {
         return true;
-    }
-
-    @EventPattern({ cmd: 'saveHistory' })
-    saveHistory(@Payload() route: SaveHistory) {
-        return this.historyService.save(route);
     }
 }

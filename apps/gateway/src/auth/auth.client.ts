@@ -12,7 +12,6 @@ import { handleRpcError } from '../helpers/rpc-error.util';
 @Injectable()
 export class AuthClient {
     private client: ClientProxy;
-
     constructor(private configService: ConfigService) {
         this.client = ClientProxyFactory.create({
             transport: Transport.RMQ,
@@ -39,7 +38,7 @@ export class AuthClient {
         }
     }
 
-    async login(email: string, password: string) {
+    async login(email: string, password: string): Promise<AuthResponse> {
         try {
             return await firstValueFrom(
                 this.client
@@ -47,6 +46,18 @@ export class AuthClient {
                         AuthResponse,
                         AuthRequest
                     >({ cmd: 'login' }, { email, password })
+                    .pipe(timeout(5000)),
+            );
+        } catch (error) {
+            handleRpcError(error);
+        }
+    }
+
+    async whoami(userId: string) {
+        try {
+            return await firstValueFrom(
+                this.client
+                    .send({ cmd: 'whoami' }, { userId })
                     .pipe(timeout(5000)),
             );
         } catch (error) {
