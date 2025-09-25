@@ -1,19 +1,93 @@
-import { Controller } from '@nestjs/common'
-import { MessagePattern, Payload } from '@nestjs/microservices'
-import { PointService } from './point.service'
-import { CreatePointDto } from './entities/dto/create-point.dto'
+import { Controller, Get } from '@nestjs/common';
+import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
+import { PointsService } from './services/points.service';
+import type {
+    AddPointsRequest,
+    AddPointsResponse,
+    GetPointsRequest,
+    GetPointsResponse,
+    FindPointRequest,
+    FindPointResponse,
+    PatchPointsRequest,
+    PatchPointsResponse,
+    DeletePointsResponse,
+    DeletePointResponse,
+    DeletePointRequest,
+    SaveHistory,
+    HistoryRequest,
+    HistoryResponse,
+    DeleteRouteRequest,
+    DeleteRouteResponse,
+} from '@app/contracts';
+import { HistoryService } from './services/history.service';
 
 @Controller()
 export class PointsController {
-  constructor(private readonly pointsService: PointService) {}
+    constructor(
+        private readonly pointsService: PointsService,
+        private readonly historyService: HistoryService,
+    ) {}
 
-  @MessagePattern({ cmd: 'create-point' })
-  async createPoint(@Payload() createPointDto: CreatePointDto) {
-    return this.pointsService.create(createPointDto);
-  }
+    @MessagePattern({ cmd: 'addPoints' })
+    addPoints(@Payload() data: AddPointsRequest): Promise<AddPointsResponse> {
+        return this.pointsService.addPoints(data);
+    }
 
-  @MessagePattern({ cmd: 'get-points-by-id' })
-  async getPointsById(@Payload('id') id: string) {
-    return this.pointsService.findById(id);
-  }
+    @MessagePattern({ cmd: 'getPoints' })
+    getPoints(@Payload() data: GetPointsRequest): Promise<GetPointsResponse> {
+        return this.pointsService.getPoints(data);
+    }
+
+    @MessagePattern({ cmd: 'getPoint' })
+    getPoint(@Payload() data: FindPointRequest): Promise<FindPointResponse> {
+        return this.pointsService.getPoint(data);
+    }
+
+    @MessagePattern({ cmd: 'patchPoints' })
+    patchPoints(
+        @Payload() data: PatchPointsRequest,
+    ): Promise<PatchPointsResponse> {
+        return this.pointsService.patchPoint(data);
+    }
+
+    @MessagePattern({ cmd: 'deletePoints' })
+    deletePoints(
+        @Payload() data: FindPointRequest,
+    ): Promise<DeletePointsResponse> {
+        return this.pointsService.deletePoints(data);
+    }
+
+    @MessagePattern({ cmd: 'deletePoint' })
+    deletePoint(
+        @Payload() data: DeletePointRequest,
+    ): Promise<DeletePointResponse> {
+        return this.pointsService.deletePoint(data);
+    }
+
+    @EventPattern({ cmd: 'saveHistory' })
+    saveHistory(@Payload() route: SaveHistory) {
+        return this.historyService.save(route);
+    }
+
+    @MessagePattern({ cmd: 'getHistory' })
+    getHistory(@Payload() data: HistoryRequest): Promise<HistoryResponse> {
+        return this.historyService.getHistory(data);
+    }
+
+    @MessagePattern({ cmd: 'deleteRoute' })
+    deleteRoute(
+        @Payload() data: DeleteRouteRequest,
+    ): Promise<DeleteRouteResponse> {
+        return this.historyService.deleteRoute(data);
+    }
+
+    @MessagePattern({ cmd: 'health' })
+    healthMessage(): boolean {
+        return true;
+    }
+
+    @Get('health')
+    healthHTTP(): boolean {
+        return true;
+    }
 }

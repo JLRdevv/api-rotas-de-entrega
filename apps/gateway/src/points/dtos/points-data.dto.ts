@@ -5,7 +5,7 @@ import {
     IsObject,
     ValidateNested,
 } from 'class-validator';
-import { PointDto } from './point.dto'; 
+import { PointDto } from './point.dto';
 
 export class PointsDataDto {
     @IsArray()

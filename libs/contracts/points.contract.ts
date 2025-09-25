@@ -60,7 +60,7 @@ export interface DeletePointsResponse {
 }
 
 // Delete specific point from points
-export interface deletePointRequest {
+export interface DeletePointRequest {
     userId: string;
     pointsId: string;
     pointId: number;

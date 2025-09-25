@@ -27,7 +27,7 @@ export class RouteClient {
             transport: Transport.RMQ,
             options: {
                 urls: [this.configService.get<string>('RMQ_URL')!],
-                queue: 'routes-queue',
+                queue: 'routes_queue',
                 queueOptions: { durable: true },
             },
         });

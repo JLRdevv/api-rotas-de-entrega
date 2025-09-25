@@ -1,4 +1,4 @@
-FROM node:alpine As development
+FROM node:alpine AS development
 
 WORKDIR /usr/src/app
 
@@ -10,17 +10,15 @@ COPY nest-cli.json nest-cli.json
 ENV CI=true
 
 RUN npm install -g pnpm
-
 RUN pnpm install
 
-COPY apps/auth apps/auth
+COPY apps/route-optimization apps/route-optimization
 COPY libs libs
 
-RUN cd apps/auth && pnpm install
+RUN cd apps/route-optimization && pnpm install
+RUN pnpm run build route-optimization
 
-RUN pnpm run build auth
-
-FROM node:alpine as production
+FROM node:alpine AS production
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
@@ -33,9 +31,8 @@ COPY pnpm-lock.yaml ./
 ENV CI=true
 
 RUN npm install -g pnpm
-
 RUN pnpm install --prod
 
 COPY --from=development /usr/src/app/dist ./dist
 
-CMD ["node", "dist/apps/auth/main"]
+CMD ["node", "dist/apps/route-optimization/main"]

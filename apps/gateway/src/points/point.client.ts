@@ -18,7 +18,7 @@ import {
     PatchPointsRequest,
     DeletePointsResponse,
     DeletePointResponse,
-    deletePointRequest,
+    DeletePointRequest,
 } from '@app/contracts';
 import { handleRpcError } from '../helpers/rpc-error.util';
 
@@ -31,7 +31,7 @@ export class PointClient {
             transport: Transport.RMQ,
             options: {
                 urls: [this.configService.get<string>('RMQ_URL')!],
-                queue: 'point-queue',
+                queue: 'points_queue',
                 queueOptions: { durable: true },
             },
         });
@@ -135,7 +135,7 @@ export class PointClient {
                 this.client
                     .send<
                         DeletePointResponse,
-                        deletePointRequest
+                        DeletePointRequest
                     >({ cmd: 'deletePoint' }, { userId, pointsId, pointId })
                     .pipe(timeout(5000)),
             );
@@ -146,11 +146,13 @@ export class PointClient {
 
     async healthCheck() {
         try {
-            const result = await firstValueFrom(
-                this.client.send({ cmd: 'health' }, {}).pipe(timeout(5000)),
+            const result = await firstValueFrom<boolean>(
+                this.client
+                    .send<boolean>({ cmd: 'health' }, {})
+                    .pipe(timeout(50000)),
             );
             return !!result;
-        } catch (error) {
+        } catch {
             return false;
         }
     }

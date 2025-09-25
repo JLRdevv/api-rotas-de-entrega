@@ -1,17 +1,12 @@
-import { Entity, ObjectIdColumn, Column } from 'typeorm';
-import { ObjectId } from 'mongodb';
+import { Entity, Column, ObjectIdColumn, ObjectId } from 'typeorm';
+import type { Point } from '../interfaces/point.interface';
+import { AbstractEntity } from '../../../../libs/common/src/database/abstract-entity';
 
-@Entity()
-export class Point {
-  @ObjectIdColumn()
-  id: ObjectId;
+@Entity('points')
+export class PointEntity extends AbstractEntity {
+    @ObjectIdColumn()
+    userId: ObjectId;
 
-  @Column()
-  name: string;
-
-  @Column()
-  coordinates: {
-    x: number;
-    y: number;
-  };
+    @Column()
+    points: Point[];
 }
