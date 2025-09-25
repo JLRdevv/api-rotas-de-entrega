@@ -17,7 +17,7 @@ export class AuthClient {
             transport: Transport.RMQ,
             options: {
                 urls: [this.configService.get<string>('RMQ_URL')!],
-                queue: 'auth-queue',
+                queue: 'auth_queue',
                 queueOptions: { durable: true },
             },
         });

@@ -88,7 +88,8 @@ describe('RouteOptimizationService', () => {
             expect(routeClient.emitRouteCalculated).toHaveBeenCalledWith({
                 userId: mockAddRouteRequest.userId,
                 pointsId: mockAddRouteRequest.pointsId,
-                calculatedRoute: mockCalculatedRoute,
+                optimizedRoute: mockCalculatedRoute.optimizedRoute,
+                totalDistance: mockCalculatedRoute.totalDistance,
             });
             expect(result).toEqual(mockCalculatedRoute);
         });
