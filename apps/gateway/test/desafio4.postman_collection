@@ -129,8 +129,12 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"exec": [],
-								"type": "text/javascript"
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -139,7 +143,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"gabriel.troni@compass.br\",\r\n    \"password\": \"123\"\r\n}",
+							"raw": "{\r\n    \"email\": {{email}},\r\n    \"password\": {{password}}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
