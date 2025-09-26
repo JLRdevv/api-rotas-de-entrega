@@ -86,7 +86,7 @@ describe('UsersService', () => {
             ).rejects.toThrow('Points are not unique');
         });
 
-        it('should throw InternalServerErrorException if db fails', async () => {
+        it('should throw RpcException if db fails', async () => {
             repo.create.mockRejectedValue(new Error('DB error'));
 
             await expect(
@@ -134,7 +134,7 @@ describe('UsersService', () => {
             expect(result).toEqual({ userPoints: [] });
         });
 
-        it('should throw InternalServerErrorException if db fails', async () => {
+        it('should throw RpcException if db fails', async () => {
             repo.findByUser.mockRejectedValue(new Error('DB error'));
 
             await expect(
@@ -153,6 +153,7 @@ describe('UsersService', () => {
             ];
             const repoResult = {
                 _id: fakePointsObjectId,
+                userId: fakeUserObjectId,
                 points,
             };
 
@@ -185,7 +186,7 @@ describe('UsersService', () => {
             expect(repo.findById).toHaveBeenCalledWith(fakePointsObjectId);
         });
 
-        it('should throw InternalServerErrorException if db fails', async () => {
+        it('should throw RpcException if db fails', async () => {
             repo.findById.mockRejectedValue(new Error('DB error'));
 
             await expect(
@@ -208,6 +209,7 @@ describe('UsersService', () => {
 
             const dbPoints = {
                 _id: fakePointsObjectId,
+                userId: fakeUserObjectId,
                 points: [
                     { id: 1, x: 1, y: 1 },
                     { id: 2, x: 2, y: 2 },
@@ -240,7 +242,7 @@ describe('UsersService', () => {
             });
         });
 
-        it('should throw NotFoundException if no points are found', async () => {
+        it('should throw RpcException if no points are found', async () => {
             const bodyPoints = [];
 
             repo.findById.mockResolvedValue(null);
@@ -256,10 +258,11 @@ describe('UsersService', () => {
             expect(repo.findById).toHaveBeenCalledWith(fakePointsObjectId);
         });
 
-        it('should throw ConflictException if updated points are not unique', async () => {
+        it('should throw RpcException if updated points are not unique', async () => {
             const bodyPoints = [{ id: 1, x: 1, y: 1 }];
             const dbPoints = {
                 _id: fakePointsObjectId,
+                userId: fakeUserObjectId,
                 points: [{ id: 2, x: 1, y: 1 }],
             };
 
@@ -276,7 +279,7 @@ describe('UsersService', () => {
             expect(repo.findById).toHaveBeenCalledWith(fakePointsObjectId);
         });
 
-        it('should throw InternalServerErrorException if db fails', async () => {
+        it('should throw RpcException if db fails', async () => {
             const bodyPoints = [{ id: 1, x: 1, y: 1 }];
 
             repo.findById.mockRejectedValue(new Error('DB error'));
@@ -295,7 +298,11 @@ describe('UsersService', () => {
 
     describe('deletePoints', () => {
         it('should delete points if pointId exists', async () => {
-            const dbPoint = { _id: fakePointsObjectId, points: [] };
+            const dbPoint = {
+                _id: fakePointsObjectId,
+                userId: fakeUserObjectId,
+                points: [],
+            };
 
             repo.findById.mockResolvedValue(dbPoint);
             repo.delete.mockResolvedValue({ affected: 1 });
@@ -324,7 +331,7 @@ describe('UsersService', () => {
             expect(repo.delete).not.toHaveBeenCalled();
         });
 
-        it('should throw InternalServerErrorException if db fails', async () => {
+        it('should throw RpcException if db fails', async () => {
             repo.findById.mockRejectedValue(new Error('DB error'));
 
             await expect(
@@ -347,6 +354,7 @@ describe('UsersService', () => {
             ];
             const dbPoints = {
                 _id: fakePointsObjectId,
+                userId: fakeUserObjectId,
                 points,
             };
             const expectedResult = {
@@ -364,17 +372,16 @@ describe('UsersService', () => {
             });
 
             expect(repo.findById).toHaveBeenCalledWith(fakePointsObjectId);
-            expect(repo.update).toHaveBeenCalledWith(
-                dbPoints._id,
-                expectedResult,
-            );
+            expect(repo.update).toHaveBeenCalledWith(dbPoints._id, {
+                points: expectedResult.points,
+            });
             expect(result).toEqual({
                 pointsId: fakePointsId,
                 points: expectedResult.points,
             });
         });
 
-        it('should throw NotFoundException if points set is not found', async () => {
+        it('should throw RpcException if points set is not found', async () => {
             repo.findById.mockResolvedValue(null);
 
             await expect(
@@ -388,8 +395,12 @@ describe('UsersService', () => {
             expect(repo.findById).toHaveBeenCalledWith(fakePointsObjectId);
         });
 
-        it('should throw NotFoundException if points set is empty', async () => {
-            const dbPoints = { _id: fakePointsObjectId, points: [] };
+        it('should throw RpcException if points set is empty', async () => {
+            const dbPoints = {
+                _id: fakePointsObjectId,
+                userId: fakeUserObjectId,
+                points: [],
+            };
 
             repo.findById.mockResolvedValue(dbPoints);
 
@@ -402,9 +413,10 @@ describe('UsersService', () => {
             ).rejects.toThrow('No points in point set');
         });
 
-        it('should throw NotFoundException if specified point does not exist', async () => {
+        it('should throw RpcException if specified point does not exist', async () => {
             const dbPoints = {
                 _id: fakePointsObjectId,
+                userId: fakeUserObjectId,
                 points: [{ id: 2, x: 1, y: 1 }],
             };
 
@@ -419,7 +431,7 @@ describe('UsersService', () => {
             ).rejects.toThrow('Specified point not found');
         });
 
-        it('should throw InternalServerErrorException if db fails', async () => {
+        it('should throw RpcException if db fails', async () => {
             repo.findById.mockRejectedValue(new Error('DB error'));
 
             await expect(

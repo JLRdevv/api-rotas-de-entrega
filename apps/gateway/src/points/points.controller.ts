@@ -7,6 +7,8 @@ import {
     Body,
     Param,
     UseGuards,
+    HttpCode,
+    HttpStatus,
 } from '@nestjs/common';
 import { PointsService } from './points.service';
 import { PointsDataDto } from './dtos/points-data.dto';
@@ -48,6 +50,7 @@ export class PointsController {
     }
 
     @Delete('/:id')
+    @HttpCode(HttpStatus.NO_CONTENT)
     async deletePoints(
         @Param('id') pointsId: string,
         @UserId() userId: string,

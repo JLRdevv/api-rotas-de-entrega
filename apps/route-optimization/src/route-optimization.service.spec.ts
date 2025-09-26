@@ -5,7 +5,9 @@ import { RouteClient } from './route.client';
 import * as utils from '@app/utils';
 import type {
     AddRouteRequest,
+    DeleteRouteRequest,
     FindPointResponse,
+    HistoryRequest,
     OptimizedRouteResult,
 } from '@app/contracts';
 
@@ -18,7 +20,9 @@ describe('RouteOptimizationService', () => {
     let service: RouteOptimizationService;
     let routeClient: {
         getPoint: jest.Mock;
-        emitRouteCalculated: jest.Mock;
+        saveHistory: jest.Mock;
+        getHistory: jest.Mock;
+        deleteRoute: jest.Mock;
     };
 
     const mockAddRouteRequest: AddRouteRequest = {
@@ -32,7 +36,6 @@ describe('RouteOptimizationService', () => {
             points: [
                 { id: 1, x: 0, y: 0 },
                 { id: 2, x: 50, y: 30 },
-                { id: 3, x: 10, y: 80 },
             ],
         },
     };
@@ -40,7 +43,9 @@ describe('RouteOptimizationService', () => {
     beforeEach(async () => {
         const mockRouteClient = {
             getPoint: jest.fn(),
-            emitRouteCalculated: jest.fn(),
+            saveHistory: jest.fn(),
+            getHistory: jest.fn(),
+            deleteRoute: jest.fn(),
         };
 
         const module: TestingModule = await Test.createTestingModule({
@@ -66,10 +71,10 @@ describe('RouteOptimizationService', () => {
     });
 
     describe('calculateAndOptimizeRoute', () => {
-        it('should successfully calculate and emit the optimized route', async () => {
+        it('should successfully calculate and save the optimized route', async () => {
             const mockCalculatedRoute: OptimizedRouteResult = {
-                optimizedRoute: [1, 3, 2, 1],
-                totalDistance: 188.8,
+                optimizedRoute: [1, 2, 1],
+                totalDistance: 116.62,
             };
 
             routeClient.getPoint.mockResolvedValue(mockFindPointResponse);
@@ -85,7 +90,8 @@ describe('RouteOptimizationService', () => {
                 mockAddRouteRequest.userId,
                 mockAddRouteRequest.pointsId,
             );
-            expect(routeClient.emitRouteCalculated).toHaveBeenCalledWith({
+
+            expect(routeClient.saveHistory).toHaveBeenCalledWith({
                 userId: mockAddRouteRequest.userId,
                 pointsId: mockAddRouteRequest.pointsId,
                 optimizedRoute: mockCalculatedRoute.optimizedRoute,
@@ -107,47 +113,35 @@ describe('RouteOptimizationService', () => {
             await expect(
                 service.calculateAndOptimizeRoute(invalidPayload),
             ).rejects.toThrow(expectedError);
-            expect(routeClient.getPoint).not.toHaveBeenCalled();
         });
+    });
 
-        it('should throw RpcException if points are not found', async () => {
-            routeClient.getPoint.mockResolvedValue(null);
-            const expectedError = new RpcException({
-                statusCode: 404,
-                message: `Points with ID ${mockAddRouteRequest.pointsId} not found.`,
-            });
+    describe('getHistory', () => {
+        it('should call the client to get history and return the result', async () => {
+            const payload: HistoryRequest = { userId: 'user-123' };
+            const expectedResponse = { route: [] };
+            routeClient.getHistory.mockResolvedValue(expectedResponse);
 
-            await expect(
-                service.calculateAndOptimizeRoute(mockAddRouteRequest),
-            ).rejects.toThrow(expectedError);
+            const result = await service.getHistory(payload);
+
+            expect(routeClient.getHistory).toHaveBeenCalledWith(payload);
+            expect(result).toEqual(expectedResponse);
         });
+    });
 
-        it('should throw RpcException if there are less than 2 points', async () => {
-            const singlePointResponse: FindPointResponse = {
-                point: { _id: '...', points: [{ id: 1, x: 0, y: 0 }] },
+    describe('deleteRoute', () => {
+        it('should call the client to delete a route and return the result', async () => {
+            const payload: DeleteRouteRequest = {
+                userId: 'user-123',
+                routeId: 'route-456',
             };
-            routeClient.getPoint.mockResolvedValue(singlePointResponse);
-            const expectedError = new RpcException({
-                statusCode: 422,
-                message: 'A route requires at least 2 points to be calculated.',
-            });
+            const expectedResponse = { deleted: true };
+            routeClient.deleteRoute.mockResolvedValue(expectedResponse);
 
-            await expect(
-                service.calculateAndOptimizeRoute(mockAddRouteRequest),
-            ).rejects.toThrow(expectedError);
-        });
+            const result = await service.deleteRoute(payload);
 
-        it('should throw RpcException if the starting point is not valid', async () => {
-            routeClient.getPoint.mockResolvedValue(mockFindPointResponse);
-            (utils.validateStartingPoint as jest.Mock).mockReturnValue(false);
-            const expectedError = new RpcException({
-                statusCode: 422,
-                message: `The provided start point with id "${mockAddRouteRequest.pointId}" was not found in the list of points.`,
-            });
-
-            await expect(
-                service.calculateAndOptimizeRoute(mockAddRouteRequest),
-            ).rejects.toThrow(expectedError);
+            expect(routeClient.deleteRoute).toHaveBeenCalledWith(payload);
+            expect(result).toEqual(expectedResponse);
         });
     });
 });

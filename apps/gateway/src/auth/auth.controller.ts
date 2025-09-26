@@ -1,4 +1,13 @@
-import { Controller, Post, Body, Res, Get, UseGuards } from '@nestjs/common';
+import {
+    Controller,
+    Post,
+    Body,
+    Res,
+    Get,
+    UseGuards,
+    HttpCode,
+    HttpStatus,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { userDataDto } from './dtos/user-data.dto';
 import { type Response } from 'express';
@@ -24,6 +33,7 @@ export class AuthController {
     }
 
     @Post('/login')
+    @HttpCode(HttpStatus.OK)
     async login(
         @Body() body: userDataDto,
         @Res({ passthrough: true }) res: Response,
@@ -38,6 +48,7 @@ export class AuthController {
     }
 
     @Post('/logout')
+    @HttpCode(HttpStatus.OK)
     logout(@Res({ passthrough: true }) res: Response) {
         res.clearCookie('Authentication', {
             httpOnly: true,
@@ -48,6 +59,6 @@ export class AuthController {
     @UseGuards(JwtAuthGuard)
     @Get('/whoami')
     async whoami(@UserId() userId: string) {
-        return await this.authService.whoami(userId)
+        return await this.authService.whoami(userId);
     }
 }

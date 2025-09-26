@@ -5,6 +5,8 @@ import {
     Param,
     Query,
     UseGuards,
+    HttpCode,
+    HttpStatus,
 } from '@nestjs/common';
 import { RoutesService } from './routes.service';
 import { UserId } from '../auth/decorators/current-user.decorator';
@@ -30,7 +32,7 @@ export class RoutesController {
         return await this.routesService.getRoute(userId, pointsId);
     }
 
-    @Get('/:pointsId/:startPointId')
+    @Get('/:pointsId/:pointId')
     async getRouteWStartPoint(
         @Param() params: GetRouteStartIdDto,
         @UserId() userId: string,
@@ -43,6 +45,7 @@ export class RoutesController {
     }
 
     @Delete('/:routeId')
+    @HttpCode(HttpStatus.NO_CONTENT)
     async deleteRoute(
         @Param('routeId') routeId: string,
         @UserId() userId: string,

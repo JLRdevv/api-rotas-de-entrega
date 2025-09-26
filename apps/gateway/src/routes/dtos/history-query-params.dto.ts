@@ -1,5 +1,11 @@
 import { Type } from 'class-transformer';
-import { IsInt, IsString, IsOptional, Min, MaxLength } from 'class-validator';
+import {
+    IsInt,
+    IsString,
+    IsOptional,
+    Min,
+    ArrayMaxSize,
+} from 'class-validator';
 import {
     IsObjectId,
     IsValidDate,
@@ -24,7 +30,7 @@ export class HistoryQueryParamsDto {
     @IsValidDate()
     @isDateArrayValid()
     @TransformToArray()
-    @MaxLength(2)
+    @ArrayMaxSize(2)
     date?: string[];
 
     @IsOptional()

@@ -6,7 +6,7 @@ import {
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { firstValueFrom, timeout } from 'rxjs';
-import { AuthRequest, AuthResponse } from '@app/contracts';
+import { AuthRequest, AuthResponse, Whoami } from '@app/contracts';
 import { handleRpcError } from '../helpers/rpc-error.util';
 
 @Injectable()
@@ -57,7 +57,7 @@ export class AuthClient {
         try {
             return await firstValueFrom(
                 this.client
-                    .send({ cmd: 'whoami' }, { userId })
+                    .send<Whoami>({ cmd: 'whoami' }, { userId })
                     .pipe(timeout(5000)),
             );
         } catch (error) {
@@ -68,10 +68,12 @@ export class AuthClient {
     async healthCheck() {
         try {
             const result = await firstValueFrom(
-                this.client.send({ cmd: 'health' }, {}).pipe(timeout(5000)),
+                this.client
+                    .send<boolean>({ cmd: 'health' }, {})
+                    .pipe(timeout(5000)),
             );
             return !!result;
-        } catch (error) {
+        } catch {
             return false;
         }
     }
