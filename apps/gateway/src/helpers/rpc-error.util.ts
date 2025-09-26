@@ -5,6 +5,8 @@ import {
     UnauthorizedException,
     ConflictException,
     BadRequestException,
+    UnprocessableEntityException,
+    NotFoundException,
 } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 
@@ -33,8 +35,14 @@ export function handleRpcError(error: any): never {
                     throw new BadRequestException(message || 'Bad Request');
                 case 401:
                     throw new UnauthorizedException(message || 'Unauthorized');
+                case 404:
+                    throw new NotFoundException(message || 'Not found');
                 case 409:
                     throw new ConflictException(message || 'Conflict');
+                case 422:
+                    throw new UnprocessableEntityException(
+                        message || 'Unprocessable Entity',
+                    );
                 default:
                     throw new InternalServerErrorException(
                         message || 'Internal Server Error',
