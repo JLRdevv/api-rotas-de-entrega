@@ -1,94 +1,189 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Desafio 4 - API Escalável de Otimização de Rotas de Entrega
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Uma API escalável construída com NestJS para otimização de rotas de entrega, utilizando arquitetura de microsserviços com comunicação via RabbitMQ.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Arquitetura
 
-## Project setup
+A aplicação é composta por 4 microsserviços:
+
+- **Gateway**: API Gateway principal com Swagger
+- **Auth**: Serviço de autenticação e usuários
+- **Points**: Gerenciamento de pontos de entrega
+- **Route Optimization** : Otimização de rotas
+
+### Infraestrutura
+
+- **MongoDB**: Banco de dados principal
+- **RabbitMQ**: Message broker para comunicação entre serviços
+
+## Como Executar
+
+### Pré-requisitos
+
+- Docker e Docker Compose
+- Node.js 18+ (opcional, para desenvolvimento)
+- pnpm (opcional, para desenvolvimento)
+
+### Executando com Docker Compose (Recomendado)
+
+1. **Clone o repositório:**
+   ```bash
+   git clone https://github.com/Squad-E-PB-JUN25/Desafio4_PB_JUN25
+   cd Desafio4_PB_JUN25
+   ```
+
+2. **Configure as variáveis de ambiente:**
+   
+   Crie os arquivos de ambiente necessários:
+   
+   - `apps/gateway/.env`
+   - `apps/auth/.env`
+   - `apps/points/.env`
+   - `apps/route-optimization/.env`
+   - `config/mongo.env`
+   - `config/rmq.env`
+
+3. **Execute a aplicação:**
+   ```bash
+   docker compose up -d
+   ```
+
+4. **Verifique se os serviços estão rodando:**
+   ```bash
+   docker compose ps
+   ```
+
+### 📱 Acessando a Aplicação
+
+- **API Principal:** [http://localhost](http://localhost)
+- **Documentação Swagger:** [http://localhost/api/docs](http://localhost/api/docs)
+- **Health Check:** [http://localhost/](http://localhost/)
+- **RabbitMQ Management:** [http://localhost:15672](http://localhost:15672)
+
+## Documentação da API
+
+A API possui documentação completa disponível através do Swagger UI:
+
+**[http://localhost/api/docs](http://localhost/api/docs)**
+
+### Principais Endpoints
+
+#### Autenticação (`/auth`)
+- `POST /auth/signup` - Criar conta
+- `POST /auth/login` - Fazer login
+- `POST /auth/logout` - Fazer logout
+- `GET /auth/whoami` - Informações do usuário logado
+
+#### Pontos (`/pontos`)
+- `GET /pontos` - Listar pontos do usuário
+- `GET /pontos/:id` - Obter ponto específico
+- `POST /pontos` - Adicionar pontos
+- `PATCH /pontos/:id` - Atualizar pontos
+- `DELETE /pontos/:id` - Remover pontos
+
+#### Rotas (`/rotas`)
+- `GET /rotas/:id` - Calcular rota otimizada
+- `GET /rotas/:pointsId/:pointId` - Rota com ponto inicial específico
+- `GET /rotas/historico` - Histórico de rotas (com filtros por data)
+- `DELETE /rotas/:routeId` - Remover rota do histórico
+
+#### Health Check (`/`)
+- `GET /` - Status de todos os microsserviços
+
+## Kubernetes
+
+A aplicação também pode ser executada em Kubernetes. Os manifests estão disponíveis na pasta `k8s/`:
 
 ```bash
-$ pnpm install
+# Aplicar todos os manifests
+kubectl apply -f k8s/
+
+# Ou aplicar por serviço
+kubectl apply -f k8s/mongo/
+kubectl apply -f k8s/rabbitmq/
+kubectl apply -f k8s/auth/
+kubectl apply -f k8s/gateway/
 ```
 
-## Compile and run the project
+### Estrutura Kubernetes
+
+```
+k8s/
+├── mongo/
+│   ├── mongo-deployment.yaml
+│   └── mongo-service.yaml
+├── rabbitmq/
+│   ├── rabbitmq-deployment.yaml
+│   └── rabbitmq-service.yaml
+├── auth/
+│   ├── auth-deployment.yaml
+│   └── auth-service.yaml
+├── gateway/
+│   ├── gateway-deployment.yaml
+│   └── gateway-service.yaml
+└── ingress/
+    └── ingress-gateway.yaml
+```
+
+## Desenvolvimento
+
+### Executando Localmente
+
+1. **Instalar dependências:**
+   ```bash
+   pnpm install
+   ```
+
+2. **Executar serviços de infraestrutura:**
+   ```bash
+   docker compose up mongo rabbitmq -d
+   ```
+
+3. **Executar cada microsserviço:**
+   ```bash
+   # Gateway
+   pnpm run start:dev gateway
+
+   # Auth
+   pnpm run start:dev auth
+
+   # Points
+   pnpm run start:dev points
+
+   # Route Optimization
+   pnpm run start:dev route-optimization
+   ```
+
+## Testes
 
 ```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+pnpm run test
 ```
 
-## Run tests
+## Autenticação
 
-```bash
-# unit tests
-$ pnpm run test
+A aplicação utiliza JWT para autenticação. O token pode ser enviado via:
 
-# e2e tests
-$ pnpm run test:e2e
+- **Cookie** (recomendado): `token`
+- **Header Authorization**: `Bearer <token>`
 
-# test coverage
-$ pnpm run test:cov
-```
+### Fluxo de Autenticação
 
-## Deployment
+1. **Registro/Login** → Recebe JWT token
+2. **Token é salvo** em cookie automaticamente
+3. **Requisições protegidas** verificam o token
+4. **Logout** limpa o cookie
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## Monitoramento
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### Health Checks
 
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
-```
+- **Global**: `GET /` - Status de todos os serviços
+- **Individual**: Cada serviço possui endpoint `/health`
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### RabbitMQ Management
 
-## Resources
+Interface web disponível em [http://localhost:15672](http://localhost:15672) para monitoramento das filas e mensagens.
 
-Check out a few resources that may come in handy when working with NestJS:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+<div align="center"><b>Desenvolvido por Squad E</b></div>
