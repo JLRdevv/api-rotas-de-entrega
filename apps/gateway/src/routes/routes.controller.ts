@@ -13,7 +13,6 @@ import { UserId } from '../auth/decorators/current-user.decorator';
 import { GetRouteStartIdDto } from './dtos/get-route-start-id.dto';
 import { HistoryQueryParamsDto } from './dtos/history-query-params.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { ObjectIdDto } from 'apps/gateway/dtos/object-id.dto';
 
 @Controller('rotas')
 @UseGuards(JwtAuthGuard)
@@ -29,11 +28,8 @@ export class RoutesController {
     }
 
     @Get('/:id')
-    async getRoute(
-        @Param('id') pointsId: ObjectIdDto,
-        @UserId() userId: string,
-    ) {
-        return await this.routesService.getRoute(userId, pointsId.id);
+    async getRoute(@Param('id') pointsId: string, @UserId() userId: string) {
+        return await this.routesService.getRoute(userId, pointsId);
     }
 
     @Get('/:pointsId/:pointId')
@@ -51,9 +47,9 @@ export class RoutesController {
     @Delete('/:routeId')
     @HttpCode(HttpStatus.NO_CONTENT)
     async deleteRoute(
-        @Param('routeId') routeId: ObjectIdDto,
+        @Param('routeId') routeId: string,
         @UserId() userId: string,
     ) {
-        return await this.routesService.deleteRoute(userId, routeId.id);
+        return await this.routesService.deleteRoute(userId, routeId);
     }
 }

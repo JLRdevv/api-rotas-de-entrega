@@ -81,6 +81,7 @@ export class PointsService {
 
     async getPoint(data: FindPointRequest): Promise<FindPointResponse> {
         try {
+
             if (!ObjectId.isValid(data.pointId)) {
                 throw new RpcException({
                     statusCode: 400,

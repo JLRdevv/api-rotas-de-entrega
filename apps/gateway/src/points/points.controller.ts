@@ -33,8 +33,6 @@ export class PointsController {
 
     @Get('/:id')
     async getPoint(@Param('id') pointsId: string, @UserId() userId: string) {
-        console.log(pointsId);
-        console.log(pointsId);
         return await this.pointsService.getPoint(userId, pointsId);
     }
 
