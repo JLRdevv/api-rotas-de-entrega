@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
 import { RpcException } from '@nestjs/microservices';
 import { RoutesRepository } from '../repository/routes.repository';
@@ -15,6 +15,8 @@ import { dateToString } from '@app/utils';
 
 @Injectable()
 export class HistoryService {
+    private readonly logger = new Logger(HistoryService.name);
+
     constructor(private readonly routesRepository: RoutesRepository) {}
 
     async save({
@@ -66,6 +68,13 @@ export class HistoryService {
 
     async deleteRoute(data: DeleteRouteRequest): Promise<DeleteRouteResponse> {
         try {
+            if (!ObjectId.isValid(data.routeId)) {
+                throw new RpcException({
+                    statusCode: 400,
+                    message: `Invalid ID format received: ${data.routeId}`,
+                });
+            }
+
             const route = await this.routesRepository.findById(
                 new ObjectId(data.routeId),
             );

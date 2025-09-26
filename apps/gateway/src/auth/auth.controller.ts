@@ -13,6 +13,7 @@ import { userDataDto } from './dtos/user-data.dto';
 import { type Response } from 'express';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { UserId } from './decorators/current-user.decorator';
+import { ObjectIdDto } from 'apps/gateway/dtos/object-id.dto';
 
 @Controller('auth')
 export class AuthController {
