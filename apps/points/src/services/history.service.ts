@@ -34,7 +34,7 @@ export class HistoryService {
             await this.routesRepository.create(route);
         } catch {
             throw new RpcException({
-                status: 500,
+                statusCode: 500,
                 message: 'Failed to reach database',
             });
         }
@@ -57,7 +57,7 @@ export class HistoryService {
             return { route };
         } catch {
             throw new RpcException({
-                status: 500,
+                statusCode: 500,
                 message: 'Failed to reach database',
             });
         }
@@ -69,18 +69,23 @@ export class HistoryService {
                 new ObjectId(data.routeId),
             );
 
-            if (!route)
+            if (
+                !route ||
+                !route.userId ||
+                route.userId.toString() !== data.userId
+            ) {
                 throw new RpcException({
-                    status: 404,
+                    statusCode: 404,
                     message: `Route not found`,
                 });
+            }
             await this.routesRepository.delete(route._id);
 
             return { deleted: true };
         } catch (error) {
             if (error instanceof RpcException) throw error;
             throw new RpcException({
-                status: 500,
+                statusCode: 500,
                 message: 'Failed to reach database',
             });
         }

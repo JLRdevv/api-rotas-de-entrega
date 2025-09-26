@@ -19,7 +19,7 @@ describe('AuthService', () => {
     const mockUserId = new ObjectId();
     const mockToken = 'mock.jwt.token';
     const mockUserData = {
-        _id: mockUserId,
+        _id: mockUserId.toString(),
         email: 'test@example.com',
     };
 
