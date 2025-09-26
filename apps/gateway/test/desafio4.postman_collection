@@ -7,6 +7,185 @@
 	},
 	"item": [
 		{
+			"name": "global",
+			"item": [
+				{
+					"name": "globalHealth",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}",
+							"host": [
+								"{{URL}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "authHealth",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{authURL}}/health",
+							"host": [
+								"{{authURL}}"
+							],
+							"path": [
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "signup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();\r",
+									"pm.collectionVariables.set(\"token\", res.token);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": {{email}},\r\n    \"password\": {{password}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/signup",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/auth/logout",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();\r",
+									"pm.collectionVariables.set(\"token\", res.token);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"gabriel.troni@compass.br\",\r\n    \"password\": \"123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/login",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "whoami",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "authentication",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/auth/whoami",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"whoami"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "points",
 			"item": [
 				{
@@ -28,6 +207,85 @@
 				},
 				{
 					"name": "insertPoints",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();\r",
+									"pm.collectionVariables.set(\"pointId\", res._id);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "authentication",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"points\": [\r\n        {\"id\": 1, \"x\": 1, \"y\": 1 },\r\n        {\"id\": 2, \"x\": 2, \"y\": 2 },\r\n        {\"id\": 3, \"x\": 3, \"y\": 3 },\r\n        {\"id\": 4, \"x\": 4, \"y\": 4 }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/pontos/",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"pontos",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "insertPoints 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();\r",
+									"pm.collectionVariables.set(\"pointId2\", res._id);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -94,13 +352,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{URL}}/pontos/68d1b17eb93ff91e29442784",
+							"raw": "{{URL}}/pontos/{{pointId}}",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"pontos",
-								"68d1b17eb93ff91e29442784"
+								"{{pointId}}"
 							]
 						}
 					},
@@ -127,37 +385,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}/pontos/68d1b210ead3b46506fcef3a",
+							"raw": "{{URL}}/pontos/{{pointId}}",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"pontos",
-								"68d1b210ead3b46506fcef3a"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "deletePoints",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "authentication",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{URL}}/pontos/68d0861ab484888ce5a039e7",
-							"host": [
-								"{{URL}}"
-							],
-							"path": [
-								"pontos",
-								"68d0861ab484888ce5a039e7"
+								"{{pointId}}"
 							]
 						}
 					},
@@ -175,14 +409,38 @@
 							}
 						],
 						"url": {
-							"raw": "{{URL}}/pontos/68d5930ac67ad242d82fa8e1/1",
+							"raw": "{{URL}}/pontos/{{pointId}}/3",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"pontos",
-								"68d5930ac67ad242d82fa8e1",
-								"1"
+								"{{pointId}}",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletePoints",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "authentication",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/pontos/{{pointId}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"pontos",
+								"{{pointId}}"
 							]
 						}
 					},
@@ -219,6 +477,30 @@
 				},
 				{
 					"name": "getRoute",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [
@@ -229,87 +511,44 @@
 							}
 						],
 						"url": {
-							"raw": "{{URL}}/rotas/68d4bc3eecf40d29b3df2a43",
+							"raw": "{{URL}}/rotas/{{pointId2}}",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"rotas",
-								"68d4bc3eecf40d29b3df2a43"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "auth",
-			"item": [
-				{
-					"name": "authHealth",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{authURL}}/health",
-							"host": [
-								"{{authURL}}"
-							],
-							"path": [
-								"health"
+								"{{pointId2}}"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "signup",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"gabriel.troni@compass.br\",\r\n    \"password\": \"123\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
+					"name": "getRouteWithStartingPoint",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						},
-						"url": {
-							"raw": "{{URL}}/auth/signup",
-							"host": [
-								"{{URL}}"
-							],
-							"path": [
-								"auth",
-								"signup"
-							]
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
 						}
-					},
-					"response": []
-				},
-				{
-					"name": "logout",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "{{URL}}/auth/logout",
-							"host": [
-								"{{URL}}"
-							],
-							"path": [
-								"auth",
-								"logout"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "whoami",
+					],
 					"request": {
 						"method": "GET",
 						"header": [
@@ -320,33 +559,217 @@
 							}
 						],
 						"url": {
-							"raw": "{{URL}}/auth/whoami",
+							"raw": "{{URL}}/rotas/{{pointId2}}/3",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
-								"auth",
-								"whoami"
+								"rotas",
+								"{{pointId2}}",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "history",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "authentication",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/rotas/historico",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"rotas",
+								"historico"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "history + pointsId param",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();\r",
+									"pm.collectionVariables.set(\"routeId\", res.route[0]._id);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "authentication",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/rotas/historico?pointsId={{pointId2}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"rotas",
+								"historico"
+							],
+							"query": [
+								{
+									"key": "pointsId",
+									"value": "{{pointId2}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "history + pagination",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "authentication",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/rotas/historico?limit=5&offset=2",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"rotas",
+								"historico"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5"
+								},
+								{
+									"key": "offset",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "history + date param",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "authentication",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/rotas/historico?date=26-09-2025",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"rotas",
+								"historico"
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "26-09-2025"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "history + dateRange param",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "authentication",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/rotas/historico?date=23-09-2025&date=26-09-2025",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"rotas",
+								"historico"
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "23-09-2025"
+								},
+								{
+									"key": "date",
+									"value": "26-09-2025"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteRoute",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "authentication",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/rotas/{{routeId}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"rotas",
+								"{{routeId}}"
 							]
 						}
 					},
 					"response": []
 				}
 			]
-		},
-		{
-			"name": "globalHealth",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{URL}}",
-					"host": [
-						"{{URL}}"
-					]
-				}
-			},
-			"response": []
 		}
 	],
 	"event": [
@@ -376,6 +799,26 @@
 	"variable": [
 		{
 			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "email",
+			"value": ""
+		},
+		{
+			"key": "password",
+			"value": ""
+		},
+		{
+			"key": "pointId",
+			"value": ""
+		},
+		{
+			"key": "pointId2",
+			"value": ""
+		},
+		{
+			"key": "routeId",
 			"value": ""
 		}
 	]

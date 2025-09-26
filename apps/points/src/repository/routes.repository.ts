@@ -7,6 +7,7 @@ import { Logger } from '@nestjs/common';
 import { RouteEntity } from '../entities/route.entity';
 import { ObjectId } from 'mongodb';
 import { HistoryRequest } from '@app/contracts';
+import { dateFiltering } from '@app/utils';
 
 @Injectable()
 export class RoutesRepository extends AbstractRepository<RouteEntity> {
@@ -27,21 +28,18 @@ export class RoutesRepository extends AbstractRepository<RouteEntity> {
         if (query.filters?.pointsId)
             filter.pointsId = new ObjectId(query.filters.pointsId);
 
-        if (query.filters?.date?.length === 1) {
-            filter.createdAt = new Date(query.filters.date[0]);
-        } else if (query.filters?.date?.length === 2) {
-            const [start, end] = query.filters.date;
+        if (query.filters?.date && query.filters?.date?.length > 0) {
+            const dateFilter = dateFiltering(query.filters?.date);
             filter.createdAt = {
-                $gte: new Date(start),
-                $lte: new Date(end),
+                $gte: dateFilter.from,
+                $lte: dateFilter.to,
             };
         }
-
         const cursor = this.repo
             .createCursor<RouteEntity>(filter)
+            .sort({ createdAt: -1 })
             .skip(query.filters?.offset ?? 0)
-            .limit(query.filters?.limit ?? 10)
-            .sort({ createdAt: -1 });
+            .limit(query.filters?.limit ?? 10);
 
         return cursor.toArray();
     }

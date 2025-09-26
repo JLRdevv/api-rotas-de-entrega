@@ -11,6 +11,7 @@ import {
     SaveHistory,
 } from '@app/contracts';
 import { RouteEntity } from '../entities/route.entity';
+import { dateToString } from '@app/utils';
 
 @Injectable()
 export class HistoryService {
@@ -50,7 +51,7 @@ export class HistoryService {
                     optimizedRoute: route.optimizedRoute,
                     totalDistance: route.totalDistance,
                 },
-                date: route.createdAt.toISOString(),
+                date: dateToString(route.createdAt),
                 pointsId: route.pointsId.toString(),
             }));
 

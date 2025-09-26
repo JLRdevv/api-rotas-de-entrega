@@ -1,5 +1,5 @@
 export function gmtMinus3(date: Date) {
-    let now = date.getTime() - 10800000;
+    const now = date.getTime() - 10800000;
     return new Date(now);
 }
 
@@ -18,6 +18,10 @@ export function dateFiltering(date: string[]) {
         from: startOfDay(date1),
         to: endOfDay(date2),
     };
+}
+
+export function dateToString(date: Date): string {
+    return date.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
 }
 
 function stringToDate(dmy: string): Date {
