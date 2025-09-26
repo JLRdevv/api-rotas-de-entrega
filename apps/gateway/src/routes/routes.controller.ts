@@ -30,7 +30,7 @@ export class RoutesController {
         return await this.routesService.getRoute(userId, pointsId);
     }
 
-    @Get('/:pointsId/:startPointId')
+    @Get('/:pointsId/:pointId')
     async getRouteWStartPoint(
         @Param() params: GetRouteStartIdDto,
         @UserId() userId: string,
