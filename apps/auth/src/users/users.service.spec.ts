@@ -216,7 +216,7 @@ describe('UsersService', () => {
                 new ObjectId(userId),
             );
             expect(result).toEqual({
-                _id: mockUser._id,
+                _id: mockUser._id.toString(),
                 email: mockUser.email,
             });
         });

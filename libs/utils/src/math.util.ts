@@ -1,4 +1,5 @@
 import type { OptimizedRouteResult, SinglePoint } from '@app/contracts';
+import { RpcException } from '@nestjs/microservices';
 
 function getEuclideanDistance(
     pointA: SinglePoint,
@@ -39,7 +40,10 @@ export function optimizeRoute(
             (point) => point.id == startPointId,
         );
         if (startPointIdIndex < 0) {
-            throw new Error('Invalid starting point');
+            throw new RpcException({
+                statusCode: 400,
+                message: `Invalid stating point`,
+            });
         }
         startingIndex = startPointIdIndex;
     } else {

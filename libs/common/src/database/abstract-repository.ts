@@ -1,7 +1,8 @@
 import { MongoRepository } from 'typeorm';
 import { ObjectId } from 'mongodb';
 import { AbstractEntity } from './abstract-entity';
-import { Logger, NotFoundException } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
+import { RpcException } from '@nestjs/microservices';
 
 export abstract class AbstractRepository<T extends AbstractEntity> {
     protected abstract readonly logger: Logger;
@@ -16,9 +17,10 @@ export abstract class AbstractRepository<T extends AbstractEntity> {
         const entity = await this.repository.findOneBy({ _id });
         if (!entity) {
             this.logger.warn(`No registers found with ${_id.toHexString()}`);
-            throw new NotFoundException(
-                `No registers found with ${_id.toHexString()}`,
-            );
+            throw new RpcException({
+                statusCode: 404,
+                message: `No registers found with ${_id.toHexString()}`,
+            });
         }
         return entity;
     }
@@ -37,9 +39,10 @@ export abstract class AbstractRepository<T extends AbstractEntity> {
         );
         if (result.matchedCount === 0) {
             this.logger.warn(`No registers found with ${_id.toHexString()}`);
-            throw new NotFoundException(
-                `No registers found with ${_id.toHexString()}`,
-            );
+            throw new RpcException({
+                statusCode: 404,
+                message: `No registers found with ${_id.toHexString()}`,
+            });
         }
         return this.findById(_id);
     }
@@ -48,9 +51,10 @@ export abstract class AbstractRepository<T extends AbstractEntity> {
         const result = await this.repository.deleteOne({ _id });
         if (result.deletedCount === 0) {
             this.logger.warn(`No registers found with ${_id.toHexString()}`);
-            throw new NotFoundException(
-                `No registers found with ${_id.toHexString()}`,
-            );
+            throw new RpcException({
+                statusCode: 404,
+                message: `No registers found with ${_id.toHexString()}`,
+            });
         }
     }
 }

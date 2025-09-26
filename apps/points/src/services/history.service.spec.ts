@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ObjectId } from 'mongodb';
 import { HistoryService } from './history.service';
 import { RoutesRepository } from '../repository/routes.repository';
+import { dateToString } from '@app/utils';
 
 describe('HistoryService', () => {
     let service: HistoryService;
@@ -106,7 +107,7 @@ describe('HistoryService', () => {
                             optimizedRoute: [1, 2, 3],
                             totalDistance: 200,
                         },
-                        date: now.toISOString(),
+                        date: dateToString(now),
                         pointsId: fakePointsId,
                     },
                 ],

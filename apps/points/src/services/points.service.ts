@@ -34,7 +34,7 @@ export class PointsService {
         try {
             if (!validatePointsUniqueness(points))
                 throw new RpcException({
-                    status: 422, // Unprocessable Entity
+                    statusCode: 422, // Unprocessable Entity
                     message: 'Points are not unique',
                 });
             points = sortIds(points);
@@ -52,7 +52,7 @@ export class PointsService {
         } catch (error) {
             if (error instanceof RpcException) throw error;
             throw new RpcException({
-                status: 500,
+                statusCode: 500,
                 message: 'Failed to reach database',
             });
         }
@@ -71,7 +71,7 @@ export class PointsService {
             return { userPoints: response };
         } catch {
             throw new RpcException({
-                status: 500,
+                statusCode: 500,
                 message: 'Failed to reach database',
             });
         }
@@ -83,9 +83,9 @@ export class PointsService {
                 new ObjectId(data.pointId),
             );
 
-            if (!result) {
+            if (!this.isValidPoint(result, data.userId)) {
                 throw new RpcException({
-                    status: 404,
+                    statusCode: 404,
                     message: `Point not found with id ${data.pointId}`,
                 });
             }
@@ -99,7 +99,7 @@ export class PointsService {
         } catch (error) {
             if (error instanceof RpcException) throw error;
             throw new RpcException({
-                status: 500,
+                statusCode: 500,
                 message: 'Failed to reach database',
             });
         }
@@ -110,21 +110,23 @@ export class PointsService {
             const dbPoints = await this.pointsRepository.findById(
                 new ObjectId(data.pointsId),
             );
-            if (!dbPoints)
+            if (!this.isValidPoint(dbPoints, data.userId)) {
                 throw new RpcException({
-                    status: 404,
+                    statusCode: 404,
                     message: `point not found`,
                 });
+            }
 
             const newPoints: Point[] = updatePoints(
                 data.points,
                 dbPoints.points,
             );
-            if (!validatePointsUniqueness(newPoints))
+            if (!validatePointsUniqueness(newPoints)) {
                 throw new RpcException({
-                    status: 422, // Unprocessable Entity
+                    statusCode: 422, // Unprocessable Entity
                     message: 'Points are not unique',
                 });
+            }
 
             dbPoints.points = newPoints;
             const result = await this.pointsRepository.update(
@@ -139,7 +141,7 @@ export class PointsService {
         } catch (error) {
             if (error instanceof RpcException) throw error;
             throw new RpcException({
-                status: 500,
+                statusCode: 500,
                 message: 'Failed to reach database',
             });
         }
@@ -151,18 +153,19 @@ export class PointsService {
                 new ObjectId(data.pointId),
             );
 
-            if (!point)
+            if (!this.isValidPoint(point, data.userId)) {
                 throw new RpcException({
-                    status: 404,
+                    statusCode: 404,
                     message: `Points not found`,
                 });
+            }
             await this.pointsRepository.delete(point._id);
 
             return { deleted: true };
         } catch (error) {
             if (error instanceof RpcException) throw error;
             throw new RpcException({
-                status: 500,
+                statusCode: 500,
                 message: 'Failed to reach database',
             });
         }
@@ -174,15 +177,16 @@ export class PointsService {
                 new ObjectId(data.pointsId),
             );
 
-            if (!point)
+            if (!this.isValidPoint(point, data.userId)) {
                 throw new RpcException({
-                    status: 404,
+                    statusCode: 404,
                     message: `Points not found`,
                 });
+            }
 
             if (point.points.length == 0)
                 throw new RpcException({
-                    status: 404,
+                    statusCode: 404,
                     message: 'No points in point set',
                 });
 
@@ -192,12 +196,15 @@ export class PointsService {
 
             if (updatedPoints.length == point.points.length)
                 throw new RpcException({
-                    status: 404,
+                    statusCode: 404,
                     message: 'Specified point not found',
                 });
 
             point.points = updatedPoints;
-            const result = await this.pointsRepository.update(point._id, point);
+            const result = await this.pointsRepository.update(point._id, {
+                points: point.points,
+            });
+
             return {
                 pointsId: result._id.toString(),
                 points: result.points,
@@ -205,9 +212,13 @@ export class PointsService {
         } catch (error) {
             if (error instanceof RpcException) throw error;
             throw new RpcException({
-                status: 500,
+                statusCode: 500,
                 message: 'Failed to reach database',
             });
         }
+    }
+
+    isValidPoint(point: PointEntity, userId: string): boolean {
+        return !!point && !!point.userId && point.userId.toString() === userId;
     }
 }
