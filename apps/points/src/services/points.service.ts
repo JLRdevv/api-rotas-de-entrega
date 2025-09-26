@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Point } from '../interfaces/point.interface';
 import {
     AddPointsRequest,
@@ -25,6 +25,8 @@ import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class PointsService {
+    private readonly logger = new Logger(PointsService.name);
+
     constructor(private readonly pointsRepository: PointsRepository) {}
 
     async addPoints({
@@ -79,6 +81,14 @@ export class PointsService {
 
     async getPoint(data: FindPointRequest): Promise<FindPointResponse> {
         try {
+
+            if (!ObjectId.isValid(data.pointId)) {
+                throw new RpcException({
+                    statusCode: 400,
+                    message: `Invalid ID format received: ${data.pointId}`,
+                });
+            }
+
             const result = await this.pointsRepository.findById(
                 new ObjectId(data.pointId),
             );
@@ -107,6 +117,13 @@ export class PointsService {
 
     async patchPoint(data: PatchPointsRequest): Promise<PatchPointsResponse> {
         try {
+            if (!ObjectId.isValid(data.pointsId)) {
+                throw new RpcException({
+                    statusCode: 400,
+                    message: `Invalid ID format received: ${data.pointsId}`,
+                });
+            }
+
             const dbPoints = await this.pointsRepository.findById(
                 new ObjectId(data.pointsId),
             );

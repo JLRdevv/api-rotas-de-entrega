@@ -9,6 +9,7 @@ import * as Joi from 'joi';
 import { RouteEntity } from './entities/route.entity';
 import { RoutesRepository } from './repository/routes.repository';
 import { HistoryService } from './services/history.service';
+import { LoggerModule } from '@app/common';
 
 @Module({
     imports: [
@@ -20,6 +21,7 @@ import { HistoryService } from './services/history.service';
                 MONGO_URL: Joi.string().required(),
             }),
         }),
+        LoggerModule,
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
@@ -30,7 +32,6 @@ import { HistoryService } from './services/history.service';
                 entities: [PointEntity, RouteEntity],
             }),
         }),
-        //LoggerModule,
         TypeOrmModule.forFeature([PointEntity, RouteEntity]),
     ],
     controllers: [PointsController],

@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { PointsModule } from './points.module';
 import { ConfigService } from '@nestjs/config';
+import { Logger } from 'nestjs-pino';
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
@@ -16,6 +17,7 @@ async function bootstrap() {
             queueOptions: { durable: true },
         },
     });
+    app.useLogger(app.get(Logger));
 
     await app.startAllMicroservices();
     await app.listen(configService.get('HTTP_PORT')!);
