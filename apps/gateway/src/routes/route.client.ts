@@ -109,10 +109,12 @@ export class RouteClient {
     async healthCheck() {
         try {
             const result = await firstValueFrom(
-                this.client.send({ cmd: 'health' }, {}).pipe(timeout(5000)),
+                this.client
+                    .send<boolean>({ cmd: 'health' }, {})
+                    .pipe(timeout(5000)),
             );
             return !!result;
-        } catch (error) {
+        } catch {
             return false;
         }
     }
