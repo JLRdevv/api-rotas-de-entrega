@@ -21,7 +21,6 @@ export function handleRpcError(error: any): never {
 
     if (error instanceof RpcException) {
         const rpcError = error.getError();
-
         if (
             typeof rpcError === 'object' &&
             rpcError &&
@@ -49,7 +48,6 @@ export function handleRpcError(error: any): never {
                     );
             }
         }
-
         throw new UnauthorizedException(error.message);
     }
 

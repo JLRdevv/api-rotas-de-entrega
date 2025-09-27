@@ -14,7 +14,8 @@ import {
     DeleteRouteResponse,
     SaveHistory,
 } from '@app/contracts';
-import { firstValueFrom, timeout } from 'rxjs';
+import { catchError, firstValueFrom, timeout } from 'rxjs';
+import { handleRpcError } from '../helper/rpc-error.util';
 
 @Injectable()
 export class RouteClient {
@@ -45,7 +46,12 @@ export class RouteClient {
                     { cmd: 'getPoint' },
                     { userId, pointId },
                 )
-                .pipe(timeout(5000)),
+                .pipe(
+                    timeout(5000),
+                    catchError((error) => {
+                        handleRpcError(error, 'Failed to get point');
+                    }),
+                ),
         );
         if (!response) {
             throw new RpcException({
@@ -70,7 +76,12 @@ export class RouteClient {
                     HistoryResponse,
                     HistoryRequest
                 >({ cmd: 'getHistory' }, payload)
-                .pipe(timeout(5000)),
+                .pipe(
+                    timeout(5000),
+                    catchError((error) => {
+                        handleRpcError(error, 'Failed to get history');
+                    }),
+                ),
         );
     }
 
@@ -83,7 +94,12 @@ export class RouteClient {
                     DeleteRouteResponse,
                     DeleteRouteRequest
                 >({ cmd: 'deleteRoute' }, payload)
-                .pipe(timeout(5000)),
+                .pipe(
+                    timeout(5000),
+                    catchError((error) => {
+                        handleRpcError(error, 'Failed to delete route');
+                    }),
+                ),
         );
     }
 }
