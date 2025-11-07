@@ -1,4 +1,11 @@
-# Desafio 4 - API Escalável de Otimização de Rotas de Entrega
+# Desafio final - API Escalável de Otimização de Rotas de Entrega
+
+Esse projeto foi o meu desafio final durante o programa de scholarship da **Compass UOL**, foi desenvolvido em grupo com mais 5 pessoas.
+Partes feitas por mim neste projeto incluem:
+- Serviço de gateway completo incluindo documentação do swagger
+- Serviço de autenticação completo
+- DockerFile base pra todos os serviços
+- Posteriormente o deploy da aplicação na AWS EC2 utilizando docker compose (usar o EC2 + docker compose foram requisitos do desafio)
 
 Uma API escalável construída com NestJS para otimização de rotas de entrega, utilizando arquitetura de microsserviços com comunicação via RabbitMQ.
 
@@ -89,41 +96,6 @@ A API possui documentação completa disponível através do Swagger UI:
 
 #### Health Check (`/`)
 - `GET /` - Status de todos os microsserviços
-
-## Kubernetes
-
-A aplicação também pode ser executada em Kubernetes. Os manifests estão disponíveis na pasta `k8s/`:
-
-```bash
-# Aplicar todos os manifests
-kubectl apply -f k8s/
-
-# Ou aplicar por serviço
-kubectl apply -f k8s/mongo/
-kubectl apply -f k8s/rabbitmq/
-kubectl apply -f k8s/auth/
-kubectl apply -f k8s/gateway/
-```
-
-### Estrutura Kubernetes
-
-```
-k8s/
-├── mongo/
-│   ├── mongo-deployment.yaml
-│   └── mongo-service.yaml
-├── rabbitmq/
-│   ├── rabbitmq-deployment.yaml
-│   └── rabbitmq-service.yaml
-├── auth/
-│   ├── auth-deployment.yaml
-│   └── auth-service.yaml
-├── gateway/
-│   ├── gateway-deployment.yaml
-│   └── gateway-service.yaml
-└── ingress/
-    └── ingress-gateway.yaml
-```
 
 ## Desenvolvimento
 
